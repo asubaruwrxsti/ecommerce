@@ -4,7 +4,7 @@
  */
 class HandlerFactory
 {
-	public static function create($handler, $session = null, $db = null, $purifier = null, $api = null)
+	public static function create($handler, $session = null, $db = null, $purifier = null, $api = null, $view = null)
 	{
 		switch ($handler) {
 			case 'logout':
@@ -12,7 +12,13 @@ class HandlerFactory
 			case 'api':
 				return new ApiHandler($purifier, $api);
 			default:
-				throw new Exception("Invalid handler: $handler");
+				$method = 'render' . $handler;
+				if(method_exists($view, $method)) {
+					$view->$method($handler, $session, $db);
+				} else {
+					$view->render('404');
+				}
+				break;
 		}
 	}
 }

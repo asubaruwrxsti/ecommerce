@@ -56,21 +56,11 @@
                 $handler = $vars['REQUEST_URI'];
             }
 
-            switch ($handler) {
-                case 'logout':
-					$handler = new LogoutHandler($session, $db);
-					$handler->handle($vars);
-                    break;
-                
-                case 'api':
-					$handler = new ApiHandler($purifier, $api);
-					$handler->handle($vars);
-                    break;
-
-                case 'Dashboard':
-                    $view->renderDashboard($handler, $session, $db);
-                    break;
+			$handlerInstance = HandlerFactory::create($handler, $session, $db, $purifier, $api, $view);
+            if ($handlerInstance) {
+                $handlerInstance->handle($vars);
             }
+
 		break;
     }
 ?>
