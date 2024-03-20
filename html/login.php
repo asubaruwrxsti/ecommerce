@@ -1,7 +1,6 @@
 <?php
     /**
-     * Login page
-     * @package admin_dashboard
+     * Login logic
      */
 
     session_start();

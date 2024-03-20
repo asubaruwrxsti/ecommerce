@@ -1,4 +1,7 @@
 <?php
+/**
+ * Handler factory
+ */
 class HandlerFactory
 {
 	public static function create($handler, $session = null, $db = null, $purifier = null, $api = null)
