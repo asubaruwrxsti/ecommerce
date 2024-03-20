@@ -10,11 +10,12 @@
     }
 
     require_once 'vendor/autoload.php';
+
+	$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+	$dotenv->safeLoad();
+
     require_once 'database.php';
     require_once 'api.php';
-
-    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-    $dotenv->safeLoad();
 
     $db = new DB($_ENV['DB_HOST'], $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME']);
     $api = new API($db);
@@ -83,15 +84,6 @@
                     break;
 
                 case 'Dashboard':
-                    $recentOrders = "SELECT customers.firstname, customers.lastname, customers.phone_number, cars.name, cars.id, revenue.rental_date, revenue.rental_duration
-                        FROM revenue 
-                        JOIN customers 
-                        ON customers.id = revenue.customer_id 
-                        JOIN cars ON cars.id = revenue.car_id
-                        ORDER BY revenue.rental_date DESC LIMIT 5;";
-                    $recentOrders = $db->execute_query($recentOrders);
-                    $recentOrders = $recentOrders->fetch_all(MYSQLI_ASSOC);
-
                     echo $header->render(array(
                         'window_title' => $handler,
                         'user_logged_in' => $_SESSION['is_loggedin'],
@@ -104,7 +96,6 @@
                             'content' => sprintf('/%s/%s.twig', strtolower($handler), strtolower($handler)),
                             'vars' => [
                                 'currency' => $_SESSION['currency'],
-                                'recent_orders' => $recentOrders
                             ]
                         )
                     );

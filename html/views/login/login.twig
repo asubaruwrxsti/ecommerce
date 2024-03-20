@@ -1,0 +1,92 @@
+<style>
+	.spacer {
+		height: 100vh;
+		background-image: url("/views/assets/img/login_bg.jpg");
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center center;
+	}
+</style>
+<script>
+	window.onload = function () {
+function time_teller() {
+
+var d = new Date();
+var n = d.getHours();
+
+var time_teller = document.getElementById("time_teller");
+var time_teller_icon = document.getElementById("time_teller_icon");
+
+if (n < 12) {
+time_teller_icon.classList.add("fas", "fa-sun");
+time_teller.innerHTML = "Good Morning";
+} else if (n < 18) {
+time_teller_icon.classList.add("fas", "fa-cloud-sun");
+time_teller.innerHTML = "Good Afternoon";
+} else {
+time_teller_icon.classList.add("fas", "fa-moon");
+time_teller.innerHTML = "Good Evening";
+}
+}
+
+time_teller();
+
+document.getElementById("login_form").addEventListener("submit", function (e) {
+e.preventDefault();
+
+let button = document.getElementById("login_button");
+button.innerHTML = "<i class='fa fa-circle-o-notch fa-spin'></i> Logging in...";
+
+var username = document.getElementById("typeEmailX-2").value;
+var password = document.getElementById("typePasswordX-2").value;
+var formData = new FormData();
+formData.append("username", username);
+formData.append("password", password);
+
+fetch("/login.php", {
+method: "POST",
+body: formData
+}).then(response => response.json()).then(data => {
+if (data.status == "success") {
+window.location.href = "/index.php/";
+} else {
+setTimeout(function () {
+button.innerHTML = "Login";
+alertify.warning(data.message)
+}, 700);
+}
+}).catch(error => {
+setTimeout(function () {
+button.innerHTML = "Login";
+}, 700);
+});
+});
+}
+</script>
+<form id='login_form'>
+	<section class="vh-100 spacer">
+		<div class="container py-5 h-100">
+			<div class="row d-flex justify-content-center align-items-center h-100">
+				<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+					<div class="card shadow-2-strong tween" style="border-radius: 1rem; background-color: rgba(255, 255, 255, 0.5); effect: webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);">
+						<div class="card-body p-5 text-center">
+							<div class="mb-5">
+								<i id="time_teller_icon"/>
+								<span id="time_teller"></span>
+							</div>
+							<div class="form-outline mb-4">
+								<input id="typeEmailX-2" class="form-control form-control-lg" placeholder="Username" required/>
+							</div>
+							<div class="form-outline mb-4">
+								<input type="password" id="typePasswordX-2" class="form-control form-control-lg" placeholder="Password" required/>
+							</div>
+							<div>
+								<button class="btn btn-primary btn-lg btn-block" id="login_button" type="submit" style='background-color: #0263b3;'>Login</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</form>
