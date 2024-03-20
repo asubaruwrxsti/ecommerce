@@ -6,7 +6,7 @@
 
     session_start();
     if (!isset($_SESSION['is_loggedin'])) {
-        header("Location: /admin_dashboard/login.php");
+        header("Location: /login.php");
     }
 
     require_once 'vendor/autoload.php';
@@ -71,7 +71,7 @@
                     session_destroy();
                     $db->destroy_session_id($_SESSION['user_id']);
                     $db->close_connection();
-                    header("Location: /admin_dashboard/login.php");
+                    header("Location: /login.php");
                     break;
                 
                 case 'api':
