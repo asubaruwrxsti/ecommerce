@@ -1,72 +1,81 @@
 <?php
-    require_once 'vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
-    if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
-        die("403 - Access Forbidden");
-    }
+if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+	throw new Exception("403 - Access Forbidden");
+}
 
-    /**
-     * Database class
-     * @package admin_dashboard
-     */
-    class DB {
-        private $conn;
-        private $purifier_config;
-        private $purifier;
+class DB
+{
+	private static $instance = null;
+	private $conn;
+	private $purifier_config;
+	private $purifier;
 
-        function __construct($hostname, $username, $password, $database) {
-            $this->create_db_conn($hostname, $username, $password, $database);
-            $this->purifier_config = HTMLPurifier_Config::createDefault();
-            $this->purifier = new HTMLPurifier($this->purifier_config);
-        }
+	private function __construct($database_path)
+	{
+		$this->create_db_conn($database_path);
+		$this->purifier_config = HTMLPurifier_Config::createDefault();
+		$this->purifier = new HTMLPurifier($this->purifier_config);
+	}
 
-        /**
-         * Connect to the database
-         * @return mysqli
-         */
-        function create_db_conn($hostname, $username, $password, $database) {
-            $this->conn = mysqli_connect($hostname, $username, $password, $database);
-            if (!$this->conn) {
-                die("Connection failed: " . mysqli_connect_error());
-            }
-            return $this->conn;
-        }
+	public static function getInstance($database_path)
+	{
+		if (self::$instance == null) {
+			self::$instance = new DB($database_path);
+		}
+		return self::$instance;
+	}
 
-        /**
-         * Execute a query
-         * @param string $sql
-         * @return mysqli_result
-         */
-        function execute_query($sql) {
-            $sql = $this->purifier->purify($sql);
-            $result = mysqli_query($this->conn, $sql);
-            return $result;
-        }
+	function create_db_conn($database_path)
+	{
+		try {
+			$this->conn = new PDO("sqlite:" . $database_path);
+			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		} catch (PDOException $e) {
+			throw new Exception("Connection failed: " . $e->getMessage());
+		}
+	}
 
-        /**
-         * Close the database connection
-         * @return void
-         */
-        function close_connection() {
-            mysqli_close($this->conn);
-        }
+	function execute_query($sql, $params = [])
+	{
+		$sql = $this->purifier->purify($sql);
+		try {
+			$stmt = $this->conn->prepare($sql);
+			$stmt->execute($params);
+			return $stmt;
+		} catch (PDOException $e) {
+			throw new Exception("Query failed: " . $e->getMessage());
+		}
+	}
 
-        /**
-         * Create a session ID for the user
-         * @return void
-         */
-        function create_session_id($uid) {
-            $this->execute_query(sprintf("UPDATE users SET last_login = NOW() WHERE id = %d", $uid));
-            $this->execute_query(sprintf("INSERT INTO `active_sessions` (uid, session_id) VALUES (%d, '%s')", $uid, session_id()));
-        }
+	public function prepare($query)
+	{
+		if ($stmt = $this->conn->prepare($query)) {
+			return $stmt;
+		} else {
+			die("Error preparing statement: " . $this->conn->error);
+		}
+	}
 
-        /**
-         * Destroy the session ID for the user
-         * @return void
-         */
-        function destroy_session_id($uid) {
-            $this->execute_query(sprintf("DELETE FROM `active_sessions` WHERE uid = %d", $uid));
-        }
+	function close_connection()
+	{
+		$this->conn = null;
+	}
 
-    }
-?>
+	function update_last_login($uid)
+	{
+		$this->execute_query("UPDATE users SET last_login = datetime('now') WHERE id = ?", [$uid]);
+	}
+
+	function create_session_id($uid)
+	{
+		$this->update_last_login($uid);
+		$this->execute_query("INSERT INTO `active_sessions` (uid, session_id) VALUES (?, ?)", [$uid, session_id()]);
+	}
+
+	function destroy_session_id($uid)
+	{
+		$this->execute_query("DELETE FROM `active_sessions` WHERE uid = ?", [$uid]);
+	}
+}

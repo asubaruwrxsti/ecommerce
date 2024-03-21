@@ -1,4 +1,8 @@
 <?php
+if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+	throw new Exception("403 - Access Forbidden");
+}
+
 /**
  * Handler factory
  */
@@ -13,7 +17,7 @@ class HandlerFactory
 				return new ApiHandler($purifier, $api);
 			default:
 				$method = 'render' . $handler;
-				if(method_exists($view, $method)) {
+				if (method_exists($view, $method)) {
 					$view->$method($handler, $session, $db);
 				} else {
 					$view->render('404');

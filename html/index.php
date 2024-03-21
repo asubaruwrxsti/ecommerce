@@ -1,66 +1,66 @@
 <?php
-    /**
-     * Main Routing file
-     * @package admin_dashboard
-     */
 
-    require_once 'vendor/autoload.php';
-    require_once 'database.php';
-    require_once 'api.php';
-    require_once 'session.php';
-    require_once 'view.php';
-	require_once 'handlers/interfaces.php';
+/**
+ * Main Routing file
+ * @package admin_dashboard
+ */
 
-    $session = new Session();
-    $session->start();
-    if (!$session->isLoggedIn()) {
-        header("Location: /login.php");
-    }
+require_once 'vendor/autoload.php';
+require_once 'database.php';
+require_once 'api.php';
+require_once 'session.php';
+require_once 'view.php';
+require_once 'handlers/interfaces.php';
 
-	$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-    $dotenv->safeLoad();
+$session = Session::getInstance();
+$session->start();
+if (!$session->isLoggedIn()) {
+	header("Location: /login.php");
+}
 
-    $db = new DB($_ENV['DB_HOST'], $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME']);
-    $api = new API($db);
-    $view = new View('views');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->safeLoad();
 
-    $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
-        $r->addGroup('/index.php', function ($r) {
-            $r->addRoute('GET', '/', 'Dashboard');
-        });
+$db = DB::getInstance($database_path);
+$api = API::getInstance($db);
+$view = View::getInstance('views');
 
-        $r->addGroup('/index.php/admin/', function ($r) {
-            $r->addRoute('GET', '/', 'Dashboard');
-        });
-    });
+$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
+	$r->addGroup('/index.php', function ($r) {
+		$r->addRoute('GET', '/', 'Dashboard');
+	});
 
-    $httpMethod = $_SERVER['REQUEST_METHOD'];
-    $uri = $_SERVER['REQUEST_URI'];
-    if (false !== $pos = strpos($uri, '?')) {
-        $uri = substr($uri, 0, $pos);
-    }
+	$r->addGroup('/index.php/admin/', function ($r) {
+		$r->addRoute('GET', '/', 'Dashboard');
+	});
+});
 
-    $uri = rawurldecode($uri);
-    $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+$httpMethod = $_SERVER['REQUEST_METHOD'];
+$uri = $_SERVER['REQUEST_URI'];
+if (false !== $pos = strpos($uri, '?')) {
+	$uri = substr($uri, 0, $pos);
+}
 
-    switch ($routeInfo[0]) {
-        case FastRoute\Dispatcher::NOT_FOUND:
-        case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-            $view->render('404');
-            break;
-        case FastRoute\Dispatcher::FOUND:
-            $handler = $routeInfo[1];
-            $vars = $routeInfo[2];
+$uri = rawurldecode($uri);
+$routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 
-            if ($handler == 'handler') {
-                $handler = $vars['REQUEST_URI'];
-            }
+switch ($routeInfo[0]) {
+	case FastRoute\Dispatcher::NOT_FOUND:
+	case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
+		$view->render('404');
+		break;
+	case FastRoute\Dispatcher::FOUND:
+		$handler = $routeInfo[1];
+		$vars = $routeInfo[2];
 
-			$handlerInstance = HandlerFactory::create($handler, $session, $db, $purifier, $api, $view);
-            if ($handlerInstance) {
-                $handlerInstance->handle($vars);
-            }
+		if ($handler == 'handler') {
+			$handler = $vars['REQUEST_URI'];
+		}
+
+		$handlerInstance = HandlerFactory::create($handler, $session, $db, $purifier, $api, $view);
+		if ($handlerInstance) {
+			$handlerInstance->handle($vars);
+		}
 
 		break;
-    }
-?>
+}

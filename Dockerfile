@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y
 
 # Install Apache, PHP and MySQLi
-RUN apt-get install -y apache2 php7.4 libapache2-mod-php7.4 php-mysql
+RUN apt-get install -y apache2 php7.4 libapache2-mod-php7.4 sqlite3 php-sqlite3
 
 # Copy the current directory contents into the container at /var/www/html/
 COPY html /var/www/html/
