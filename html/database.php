@@ -41,7 +41,15 @@ class DB
 	{
 		try {
 			$stmt = $this->conn->prepare($sql);
-			$stmt->execute($params);
+			if (!$stmt) {
+				throw new Exception("Failed to prepare statement: " . implode(", ", $this->conn->errorInfo()));
+			}			
+			foreach ($params as $key => $val) {
+				$stmt->bindValue($key + 1, $val);
+			}
+			if (!$stmt->execute()) {
+				throw new Exception("Failed to execute statement: " . implode(", ", $stmt->errorInfo()));
+			}
 			return $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch (PDOException $e) {
 			throw new Exception("Query failed: " . $e->getMessage());

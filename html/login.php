@@ -45,9 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$username = $purifier->purify($_POST['username']);
 	$password = $purifier->purify($_POST['password']);
 
-	$result = $db->execute_query("SELECT * FROM users WHERE username = ?", [$username]);
-
-	var_dump($result);
+	$result = $db->execute_query("SELECT * FROM users WHERE username = ? LIMIT 1", [$username]);
 
 	if (count($result) > 0) {
 		$row = $result[0];
@@ -62,14 +60,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				$db->create_session_id($row['id']);
 
 				setcookie('username', $username, time() + 3600, '/');
-				respondWithJson('success', 'Login successful');
+				respondWithJson(true, 'Login successful');
 			} catch (Exception $e) {
-				respondWithJson('error', 'Something went wrong');
+				respondWithJson(false, $e->getMessage());
 			}
 		} else {
-			respondWithJson('error', 'Wrong Credentials');
+			respondWithJson(false, 'Wrong Credentials');
 		}
 	} else {
-		respondWithJson('error', 'Wrong Credentials');
+		respondWithJson(false, 'User not found');
 	}
 }

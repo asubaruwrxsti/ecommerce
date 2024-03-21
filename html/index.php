@@ -10,6 +10,7 @@ require_once 'api.php';
 require_once 'session.php';
 require_once 'view.php';
 require_once 'handlers/interfaces.php';
+require_once 'handlers/handlerFactory.php';
 
 $session = Session::getInstance();
 $session->start();
@@ -29,7 +30,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
 		$r->addRoute('GET', '/', 'Dashboard');
 	});
 
-	$r->addGroup('/index.php/admin/', function ($r) {
+	$r->addGroup('/index.php/admin', function ($r) {
 		$r->addRoute('GET', '/', 'Dashboard');
 	});
 });
