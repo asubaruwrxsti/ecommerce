@@ -2,7 +2,6 @@
 
 /**
  * Main Routing file
- * @package admin_dashboard
  */
 
 require_once 'vendor/autoload.php';
