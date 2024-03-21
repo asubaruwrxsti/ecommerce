@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$stmt->execute();
 
 	$result = $db->execute_query("SELECT name FROM sqlite_master WHERE type='table'");
+	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	var_dump($result);
 
 	if (!$result) {
