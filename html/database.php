@@ -39,22 +39,12 @@ class DB
 
 	function execute_query($sql, $params = [])
 	{
-		$sql = $this->purifier->purify($sql);
 		try {
 			$stmt = $this->conn->prepare($sql);
 			$stmt->execute($params);
-			return $stmt;
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch (PDOException $e) {
 			throw new Exception("Query failed: " . $e->getMessage());
-		}
-	}
-
-	public function prepare($query)
-	{
-		if ($stmt = $this->conn->prepare($query)) {
-			return $stmt;
-		} else {
-			die("Error preparing statement: " . $this->conn->error);
 		}
 	}
 

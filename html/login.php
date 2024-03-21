@@ -45,21 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$username = $purifier->purify($_POST['username']);
 	$password = $purifier->purify($_POST['password']);
 
-	$stmt = $db->prepare("SELECT * FROM users WHERE username = ?");
-	$stmt->bindValue(1, $username, SQLITE3_TEXT);
-	$stmt->execute();
+	$result = $db->execute_query("SELECT * FROM users WHERE username = ?", [$username]);
 
-	$result = $db->execute_query("SELECT name FROM sqlite_master WHERE type='table'");
-	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	var_dump($result);
 
-	if (!$result) {
-		var_dump("Error in SQL query: ");
-		var_dump($db->errorInfo());
-	}
-
-	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	var_dump($result);
 	if (count($result) > 0) {
 		$row = $result[0];
 		if (password_verify($password, $row['password'])) {
