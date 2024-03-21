@@ -3,8 +3,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 	throw new Exception("403 - Access Forbidden");
 }
 
-require_once '../session.php';
-require_once '../database.php';
+require_once 'session.php';
+require_once 'database.php';
 
 /**
  * Handler interface

@@ -58,6 +58,11 @@ class DB
 		}
 	}
 
+	public function errorInfo()
+	{
+		return $this->conn->errorInfo();
+	}
+
 	function close_connection()
 	{
 		$this->conn = null;

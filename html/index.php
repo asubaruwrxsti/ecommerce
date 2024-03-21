@@ -20,7 +20,7 @@ if (!$session->isLoggedIn()) {
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
 
-$db = DB::getInstance($database_path);
+$db = DB::getInstance("database.sqlite3");
 $api = API::getInstance($db);
 $view = View::getInstance('views');
 

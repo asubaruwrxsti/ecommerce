@@ -15,7 +15,7 @@ $dotenv->safeLoad();
 $purifier_config = HTMLPurifier_Config::createDefault();
 $purifier = new HTMLPurifier($purifier_config);
 
-$db = DB::getInstance("./database.sqlite3");
+$db = DB::getInstance("database.sqlite3");
 $session = Session::getInstance();
 $session->start();
 
@@ -44,28 +44,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$username = $purifier->purify($_POST['username']);
 	$password = $purifier->purify($_POST['password']);
-	$password = password_hash($password, PASSWORD_DEFAULT);
 
-	$stmt = $db->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
-	$stmt->bind_param("ss", $username, $password);
+	$stmt = $db->prepare("SELECT * FROM users WHERE username = ?");
+	$stmt->bindValue(1, $username, SQLITE3_TEXT);
 	$stmt->execute();
 
-	$result = $stmt->get_result();
-	if ($result->num_rows > 0) {
-		try {
-			$row = $result->fetch_assoc();
+	$result = $db->execute_query("SELECT name FROM sqlite_master WHERE type='table'");
+	var_dump($result);
 
-			$_SESSION['user_id'] = $row['id'];
-			$_SESSION['user_role'] = $row['is_admin'] == 1 ? 'admin' : 'user';
-			$_SESSION['username'] = $username;
-			$_SESSION['is_loggedin'] = true;
-			$_SESSION['currency'] = $row['currency'];
-			$db->create_session_id($row['id']);
+	if (!$result) {
+		var_dump("Error in SQL query: ");
+		var_dump($db->errorInfo());
+	}
 
-			setcookie('username', $username, time() + 3600, '/');
-			respondWithJson('success', 'Login successful');
-		} catch (Exception $e) {
-			respondWithJson('error', 'Something went wrong');
+	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	var_dump($result);
+	if (count($result) > 0) {
+		$row = $result[0];
+		if (password_verify($password, $row['password'])) {
+			try {
+				$_SESSION['user_id'] = $row['id'];
+				$_SESSION['user_role'] = $row['is_admin'] == 1 ? 'admin' : 'user';
+				$_SESSION['group_id'] = $row['group'];
+				$_SESSION['username'] = $username;
+				$_SESSION['is_loggedin'] = true;
+				$_SESSION['currency'] = $row['currency'];
+				$db->create_session_id($row['id']);
+
+				setcookie('username', $username, time() + 3600, '/');
+				respondWithJson('success', 'Login successful');
+			} catch (Exception $e) {
+				respondWithJson('error', 'Something went wrong');
+			}
+		} else {
+			respondWithJson('error', 'Wrong Credentials');
 		}
 	} else {
 		respondWithJson('error', 'Wrong Credentials');
