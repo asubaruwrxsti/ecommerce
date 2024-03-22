@@ -26,11 +26,7 @@ class API
 	function checkSid()
 	{
 		$sid = session_id();
-		$stmt = $this->db->prepare("SELECT * FROM active_sessions WHERE session_id = ?");
-		$stmt->bind_param("s", $sid);
-		$stmt->execute();
-		$result = $stmt->get_result();
-		$data = $result->fetch_all(MYSQLI_ASSOC);
+		$data = $this->db->execute_query("SELECT * FROM active_sessions WHERE session_id = ?", [$sid]);
 		return count($data) > 0 ? true : false;
 	}
 

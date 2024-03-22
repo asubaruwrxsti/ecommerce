@@ -45,8 +45,20 @@ class View
 			throw new Exception("View file not found: $viewFile");
 		}
 
-		extract($data);
-		include $viewFile;
+		echo $this->header->render(array(
+			'window_title' => strtoupper($viewName),
+			'user_logged_in' => $_SESSION['is_loggedin'],
+			'user_role' => $_SESSION['user_role'],
+			'user_name' => strtoupper($_SESSION['username'])
+			// Add more data as needed
+		));
+
+		echo $this->base->render([
+			'window_title' => strtoupper($viewName),
+			'content' => sprintf('%s/%s.twig', strtolower($viewName), strtolower($viewName)),
+			'vars' => $data,
+			// Add more data as needed
+		]);
 	}
 
 	public function renderDashboard($handler, $session, $db)

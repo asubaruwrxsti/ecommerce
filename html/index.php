@@ -23,15 +23,15 @@ $dotenv->safeLoad();
 
 $db = DB::getInstance("database.sqlite3");
 $api = API::getInstance($db);
-$view = View::getInstance('views');
+$view = View::getInstance('./views');
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
 	$r->addGroup('/index.php', function ($r) {
-		$r->addRoute('GET', '/', 'Dashboard');
+		$r->addRoute('GET', '/', 'dashboard');
 	});
 
 	$r->addGroup('/index.php/admin', function ($r) {
-		$r->addRoute('GET', '/', 'Dashboard');
+		$r->addRoute('GET', '/', 'dashboard');
 	});
 });
 
