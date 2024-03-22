@@ -4,6 +4,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 }
 
 require_once 'vendor/autoload.php';
+require_once 'database.php';
 
 /**
  * View class
@@ -17,6 +18,7 @@ class View
 	private $header;
 	private $base;
 	private $footer;
+	private $db;
 
 	public function __construct($viewsDir)
 	{
@@ -27,6 +29,8 @@ class View
 		$this->header = $this->twig->load('header.twig');
 		$this->base = $this->twig->load('base.twig');
 		$this->footer = $this->twig->load('footer.twig');
+
+		$this->db = DB::getInstance("database.sqlite3");
 	}
 
 	public static function getInstance($viewsDir)
@@ -49,7 +53,8 @@ class View
 			'window_title' => strtoupper($viewName),
 			'user_logged_in' => $_SESSION['is_loggedin'],
 			'user_role' => $_SESSION['user_role'],
-			'user_name' => strtoupper($_SESSION['username'])
+			'user_name' => strtoupper($_SESSION['username']),
+			'nav_items' => $this->db->execute_query("SELECT * FROM navbar_items"),
 			// Add more data as needed
 		));
 

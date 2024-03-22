@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 		die();
 	}
 
-	$header = $twig->load('/assets/header.twig');
+	$header = $twig->load('/header.twig');
 	$template = $twig->load('/login/login.twig');
 
 	echo $header->render(array(
