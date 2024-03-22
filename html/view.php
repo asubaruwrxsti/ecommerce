@@ -59,6 +59,8 @@ class View
 			'vars' => $data,
 			// Add more data as needed
 		]);
+
+		echo $this->footer->render();
 	}
 
 	public function renderDashboard($handler, $session, $db)
