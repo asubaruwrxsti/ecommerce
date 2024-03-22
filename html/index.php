@@ -21,6 +21,9 @@ if (!$session->isLoggedIn()) {
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
 
+$purifier_config = HTMLPurifier_Config::createDefault();
+$purifier = new HTMLPurifier($purifier_config);
+
 $db = DB::getInstance("database.sqlite3");
 $api = API::getInstance($db);
 $view = View::getInstance('./views');

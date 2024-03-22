@@ -63,11 +63,13 @@ class View
 		echo $this->footer->render();
 	}
 
-	public function renderDashboard($handler, $session, $db)
-	{
+	public function render_dashboard($handler, $params)
+	{	
 		// Fetch data for the dashboard
+		$products = $params["db"]->execute_query("SELECT * FROM products");
 		$data = [
-			'user' => $session->get('user'),
+			'user' => $params["session"]->get('user'),
+			'products' => $products,
 			// Add more data as needed
 		];
 
