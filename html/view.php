@@ -5,6 +5,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 
 require_once 'vendor/autoload.php';
 require_once 'database.php';
+require_once './utils/growth.php';
 
 /**
  * View class
@@ -75,8 +76,14 @@ class View
 		$data = [
 			'user' => $params["session"]->get('user'),
 			'products' => $products,
+			'currency' => $_SESSION['currency'],
+			'sales' => $params["db"]->execute_query("SELECT * FROM sales"),
+			// 'growth' => calculateGrowth($params["db"], 'sales'),
+			'growth' => '10',
 			// Add more data as needed
 		];
+
+		var_dump($data);
 
 		$this->render($handler, $data);
 	}
