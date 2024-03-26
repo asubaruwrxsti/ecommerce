@@ -1,3 +1,7 @@
+<script>
+	let table = new DataTable('#myTable');
+</script>
+
 <div class="flex flex-col mt-6 mb-6 rounded-2xl shadow-2xl">
 	<div class="overflow-x-auto rounded-2xl shadow-2xl">
 		<div class="inline-block min-w-full align-middle rounded-2xl shadow-2xl">
@@ -26,15 +30,10 @@
 											<div class="text-sm text-gray-900 light:text-white">{{ value }}</div>
 										{% endif %}
 									{% endfor %}
-									<td class="px-6 py-4 text-sm font-medium whitespace-nowrap">
+									<td class="py-2 px-3 border-b border-gray-200 text-sm">
 										<div class="flex items-center justify-end space-x-4">
-											<a href="/edit-url" class="text-indigo-600 hover:text-indigo-900 flex items-center space-x-1" role="button" aria-label="Edit item" title="Edit item">
-												<i class="fas fa-edit px-2 py-1 text-sm text-white bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" alt="Edit icon"></i>
-												<span>Edit</span>
-											</a>
-											<a href="/delete-url" class="text-red-700 hover:text-red-500 transition duration-200 ease-in-out flex items-center space-x-1" role="button" aria-label="Delete item" title="Delete item">
-												<i class="fas fa-trash-alt px-2 py-1 text-sm text-white bg-red-600 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" alt="Delete icon"></i>
-												<span>Delete</span>
+											<a href="#" class="text-primary-700 hover:text-primary-500 transition duration-200 ease-in-out">
+												<i class="fas fa-edit mr-1"></i>View
 											</a>
 										</div>
 									</td>
