@@ -1,41 +1,89 @@
 <div
-	class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 light:border-gray-700 sm:p-6 light:bg-gray-800">
+	class="p-4 mb-6 bg-white border border-gray-200 rounded-2xl shadow-2xl 2xl:col-span-2 light:border-gray-700 sm:p-6 light:bg-gray-800">
 	<div class="flex items-center justify-between mb-4">
 		<div class="flex-shrink-0">
-			<span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl light:text-white">{{currency}}
-				{{sales[0]["revenue"]}}</span>
-			<h3 class="text-base font-light text-gray-500 light:text-gray-400">Sales this week</h3>
+			<span class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl light:text-white">{{sales[0]["revenue"]}} {{currency}}</span>
+			<h3 class="text-lg font-semibold text-gray-500 light:text-gray-400">Revenue this week</h3>
 		</div>
-		<div class="flex items-center justify-end flex-1 text-base font-medium text-green-500 light:text-green-400">
-			{{growth}}
-			%
-			<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+		<div class="flex items-center justify-end flex-1 text-lg font-semibold text-green-500 light:text-green-400">
+			{{growth}} %
+			<svg class="w-6 h-6 ml-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
 				<path fill-rule="evenodd"
 					d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z"
 					clip-rule="evenodd"></path>
 			</svg>
 		</div>
 	</div>
-	<div id="main-chart"></div>
 	<!-- Card Footer -->
-	<div class="flex items-center justify-between pt-3 mt-4 border-t border-gray-200 sm:pt-6 light:border-gray-700">
-		<div>
-			<p class="text-sm font-medium text-gray-500 light:text-gray-400">Last week sales</p>
+	<div
+		class="flex flex-col items-center justify-between pt-3 mt-4 border-t border-gray-200 sm:pt-6 light:border-gray-700">
+		<div class="flex justify-between w-full mb-6">
+			<div>
+				<p class="text-lg font-semibold text-gray-500 light:text-gray-400">Last week sales</p>
+			</div>
+			<div class="flex-shrink-0">
+				<a href="#"
+					class="inline-flex items-center p-2 text-sm font-semibold uppercase rounded-lg text-primary-700 sm:text-sm hover:bg-gray-100 light:text-primary-500 light:hover:bg-gray-700">
+					Sales Report
+					<svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+						xmlns="http://www.w3.org/2000/svg">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+					</svg>
+				</a>
+			</div>
 		</div>
-		<div>
-			{% for sale in sales %}
-			<p>{{ sale["revenue"] }}</p>
-			{% endfor %}
+		<div class="overflow-x-auto bg-white rounded-lg shadow overflow-y-auto relative w-full">
+			<table class="border-collapse table-auto w-full whitespace-no-wrap bg-white table-striped relative">
+				<thead>
+					<tr class="text-left">
+						{% for key in sales[0]|keys %}
+						{% if key != "id" %}
+						<th
+							class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100 text-gray-600 font-semibold text-sm">
+							{{ key|capitalize }}
+						</th>
+						{% endif %}
+						{% endfor %}
+						<th
+							class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100 text-gray-600 font-semibold text-sm text-right">
+							Actions
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for sale in sales %}
+					<tr class="hover:bg-gray-100">
+						{% for key, value in sale %}
+						{% if key != "id" %}
+						<td class="py-2 px-3 border-b border-gray-200 text-sm">{{ value }}</td>
+						{% endif %}
+						{% endfor %}
+						<td class="py-2 px-3 border-b border-gray-200 text-sm">
+							<div class="flex items-center justify-end space-x-4">
+								<a href="#"
+									class="text-primary-700 hover:text-primary-500 transition duration-200 ease-in-out">
+									<i class="fas fa-edit mr-1"></i>Edit
+								</a>
+								<a href="#" class="text-red-700 hover:text-red-500 transition duration-200 ease-in-out">
+									<i class="fas fa-trash-alt mr-1"></i>Delete
+								</a>
+							</div>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 		</div>
-		<div class="flex-shrink-0">
-			<a href="#"
-				class="inline-flex items-center p-2 text-xs font-medium uppercase rounded-lg text-primary-700 sm:text-sm hover:bg-gray-100 light:text-primary-500 light:hover:bg-gray-700">
-				Sales Report
-				<svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+		<a href="#"
+			class="mt-4 text-sm font-semibold text-primary-700 hover:text-primary-500 transition duration-200 ease-in-out">
+			<button
+				class="flex items-center justify-center w-full px-4 py-2 text-sm font-semibold text-primary-700 uppercase bg-gray-100 rounded-lg hover:bg-gray-200 light:text-primary-500 light:bg-gray-700">
+				View all sales
+				<svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"
 					xmlns="http://www.w3.org/2000/svg">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
 				</svg>
-			</a>
-		</div>
+			</button>
+		</a>
 	</div>
 </div>
