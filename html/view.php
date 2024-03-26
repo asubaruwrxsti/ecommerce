@@ -77,7 +77,7 @@ class View
 			'user' => $params["session"]->get('user'),
 			'products' => $products,
 			'currency' => $_SESSION['currency'],
-			'sales' => $params["db"]->execute_query("SELECT * FROM sales"),
+			'sales' => $params["db"]->execute_query("SELECT * FROM sales WHERE sales.date BETWEEN date('now', '-14 days') AND date('now')"),
 			// 'growth' => calculateGrowth($params["db"], 'sales'),
 			'growth' => '10',
 			// Add more data as needed
