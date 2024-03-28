@@ -83,8 +83,26 @@ class View
 			// Add more data as needed
 		];
 
-		var_dump($data);
-
 		$this->render($handler, $data);
+	}
+
+	public function render_products($handler, $params)
+	{
+		$this->render($handler);
+	}
+
+	public function render_sales($handler, $params)
+	{
+		$this->render($handler);
+	}
+
+	public function render_clients($handler, $params)
+	{
+		$this->render($handler);
+	}
+
+	public function render_messages($handler, $params)
+	{
+		$this->render($handler);
 	}
 }

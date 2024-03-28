@@ -31,6 +31,11 @@ $view = View::getInstance('./views');
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
 	$r->addGroup('/index.php', function ($r) {
 		$r->addRoute('GET', '/', 'dashboard');
+		$r->addRoute('GET', '/products/', 'products');
+		$r->addRoute('GET', '/sales/', 'sales');
+		$r->addRoute('GET', '/clients/', 'clients');
+		$r->addRoute('GET', '/messages/', 'messages');
+
 	});
 
 	$r->addGroup('/index.php/admin', function ($r) {
