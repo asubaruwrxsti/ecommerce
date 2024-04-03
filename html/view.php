@@ -88,7 +88,24 @@ class View
 
 	public function render_products($handler, $params)
 	{
-		$this->render($handler);
+		$products = $params["db"]->execute_query("SELECT * FROM products");
+		if (!empty($products)) {
+			$products_header = array_keys($products[0]);
+			foreach ($products as &$product) {
+				$product['comments'] = json_decode($product['comments'], true);
+			}
+		} else {
+			$products_header = [];
+		}
+	
+		$data = [
+			'user' => $params["session"]->get('user'),
+			'products_header' => $products_header,
+			'products_data' => $products,
+			'currency' => $_SESSION['currency'],
+		];
+		
+		$this->render($handler, $data);
 	}
 
 	public function render_sales($handler, $params)

@@ -1,1 +1,44 @@
-this is products
+<div class="w-full bg-white rounded-2xl shadow-2xl mb-6 p-16">
+    <table class="table-auto w-full" id="products-table">
+        <thead>
+            <tr>
+                {% for header in products_header %}
+                <th class="px-4 py-2">{{ header }}</th>
+                {% endfor %}
+                <th class="px-4 py-2">Actions</th> <!-- Add this line -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products_data %}
+            <tr>
+                {% for key, value in product %}
+                <td class="border px-4 py-2">
+                    {% if key == 'rating' %}
+                        {% for i in 0..value - 1 %}
+                            <span>&#9733;</span> <!-- This is a star symbol -->
+                        {% endfor %}
+                    {% elseif key == 'comments' %}
+                        {{ value|length }} <!-- This will output the number of comments -->
+                    {% else %}
+                        {{ value }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+                <td class="border px-4 py-2">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</button>
+                    <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    new DataTable('#products-table', {
+        searchable: true,
+        sortable: true,
+        perPage: 10,
+        perPageSelect: [5, 10, 20, 50, 100]
+    });
+</script>
