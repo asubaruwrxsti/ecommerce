@@ -34,12 +34,11 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
 		$r->addRoute('GET', '/products/', 'products');
 		$r->addRoute('GET', '/sales/', 'sales');
 		$r->addRoute('GET', '/clients/', 'clients');
-		$r->addRoute('GET', '/messages/', 'messages');
-
+		$r->addRoute('GET', '/messages/', 'messages');	
 	});
 
-	$r->addGroup('/index.php/admin', function ($r) {
-		$r->addRoute('GET', '/', 'dashboard');
+	$r->addGroup('/index.php/api', function ($r) {
+		$r->addRoute(['GET', 'POST', 'DELETE'], '/', 'api');
 	});
 });
 
