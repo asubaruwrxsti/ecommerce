@@ -30,7 +30,7 @@ class API
 		return count($data) > 0 ? true : false;
 	}
 
-	function handleRequest($property)
+	function handleRequest($property = null, $id = null)
 	{
 		if (!$this->checkSid()) {
 			http_response_code(403);
@@ -43,7 +43,7 @@ class API
 
 		switch ($_SERVER['REQUEST_METHOD']) {
 			case 'GET':
-				$this->handleGet($property);
+				$this->handleGet($property, $id);
 				break;
 			case 'POST':
 				$this->handlePost($property);
@@ -58,19 +58,14 @@ class API
 		}
 	}
 
-	private function handleGet($property)
+	private function handleGet($property, $id = null)
 	{
-		$property_name = $property[0];
-		$id = isset($property[1]) ? $property[1] : null;
-
-		$sql = "SELECT * FROM $property_name";
-		if ($id) {
+		$sql = "SELECT * FROM $property";
+		if ($id != null) {
 			$sql .= " WHERE id = $id";
 		}
 
-		$result = $this->db->execute_query($sql);
-		$data = $result->fetch_all(MYSQLI_ASSOC);
-		return $data;
+		echo json_encode($this->db->execute_query($sql));
 	}
 
 	private function handlePost($property)
