@@ -47,6 +47,20 @@
 <script>
     $(document).ready(function() {
         let products_data = {{ products_data|json_encode|raw }};
+		document.getElementById('product_image').addEventListener('change', function(e) {
+			var file = e.target.files[0];
+			var reader = new FileReader();
+
+			reader.onloadend = function() {
+				var blob = new Blob([reader.result], {type: file.type});
+				// Now you can use blob as you wish
+				console.log(blob);
+			};
+
+			if (file) {
+				reader.readAsArrayBuffer(file);
+			}
+		});
 
         $('#editModal').on('show.bs.modal', function (event) {
             let button = $(event.relatedTarget);
