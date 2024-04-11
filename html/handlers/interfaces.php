@@ -56,6 +56,6 @@ class ApiHandler implements Handler
 		$property = $this->purifier->purify($vars['property']);
 		$id = isset($vars['id']) ? $this->purifier->purify($vars['id']) : null;
 		
-		$res = $this->api->handleRequest($property, $id);
+		$this->api->handleRequest($property, $id);
 	}
 }

@@ -19,6 +19,14 @@
 								{% endfor %}
 							{% elseif key == 'comments' %}
 								{{ value|length }}
+							{% elseif key == 'image' %}
+								<img src="{{ value|default('/views/assets/img/product_default.svg') }}" alt="Product Image" class="w-16 h-16 rounded">
+							{% elseif key == 'price' %}
+								${{ value }}
+							{% elseif key == 'description' %}
+								{{ value|length > 50 ? value|slice(0, 50) ~ '...' : value }}
+							{% elseif key == 'quantity' %}
+								{{ value > 0 ? value : 'Out of stock' }}
 							{% else %}
 								{{ value }}
 							{% endif %}
@@ -41,7 +49,6 @@
         let products_data = {{ products_data|json_encode|raw }};
 
         $('#editModal').on('show.bs.modal', function (event) {
-            console.log('modal opened')
             let button = $(event.relatedTarget);
             let id = button.data('id');
             let product = products_data.find(product => product.id == id);
@@ -52,16 +59,57 @@
             $('#product_quantity').val(product.quantity);
         });
 
-        fetch("/index.php/api/users/", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }).then(response => response.json())
-            .then(data => {
-                console.log(data);
-            }
-        )
+		function updateProduct(id, data) {
+			$.ajax({
+				url: `/index.php/api/products/edit/${id}`,
+				type: 'POST',
+				data: data,
+				success: function(response) {
+					console.log(response);
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			});
+		}
+
+		$('#editModal').on('show.bs.modal', function (event) {
+			var button = $(event.relatedTarget); // Button that triggered the modal
+			var id = button.data('id'); // Extract info from data-* attributes
+
+			// Update the modal's content.
+			var modal = $(this);
+			modal.find('.modal-title').text('Edit Product ' + id);
+
+			// You can also populate the form fields here using the id
+
+			// Move your click event inside the show.bs.modal event
+			modal.find('button.btn-primary').click(function() {
+				let data = {
+					name: $('#product_name').val(),
+					description: $('#product_description').val(),
+					price: $('#product_price').val(),
+					quantity: $('#product_quantity').val(),
+					image: $('#product_image').val()
+				};
+
+				updateProduct(id, data);
+			});
+		});
+
+		$('#deleteModal button.btn-primary').click(function() {
+			let id = $('#deleteModal button.btn-primary').data('id');
+			$.ajax({
+				url: `/products/${id}`,
+				type: 'DELETE',
+				success: function(response) {
+					window.location.reload();
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			});
+		});
     });
 </script>
 

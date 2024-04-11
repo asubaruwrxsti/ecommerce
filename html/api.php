@@ -46,7 +46,7 @@ class API
 				$this->handleGet($property, $id);
 				break;
 			case 'POST':
-				$this->handlePost($property);
+				$this->handlePost($property, $id);
 				break;
 			case 'DELETE':
 				$this->handleDelete($property);
@@ -68,12 +68,13 @@ class API
 		echo json_encode($this->db->execute_query($sql));
 	}
 
-	private function handlePost($property)
+	private function handlePost($property_name, $id = null)
 	{
-		$property_name = $property[0];
-		$id = isset($property[1]) ? $property[1] : null;
+		var_dump($property_name);
+		var_dump($id);
+
 		$query_type = ($id == null) ? 'INSERT INTO %s (%s) VALUES (%s)' : 'UPDATE %s SET %s WHERE id = %s';
-		$data = json_decode(file_get_contents('php://input'), true);
+		$data = $_POST;
 
 		$update_pairs = [];
 		foreach ($data as $key => $value) {
