@@ -70,9 +70,6 @@ class API
 
 	private function handlePost($property_name, $id = null)
 	{
-		var_dump($property_name);
-		var_dump($id);
-
 		$query_type = ($id == null) ? 'INSERT INTO %s (%s) VALUES (%s)' : 'UPDATE %s SET %s WHERE id = %s';
 		$data = $_POST;
 
@@ -96,10 +93,10 @@ class API
 		}
 
 		$result = $this->db->execute_query($query);
-		if ($result) {
+		if ($result && $id != null) {
 			return respondWithJson(true, 'Data updated successfully');
 		} else {
-			return respondWithJson(false, 'Error updating data');
+			return respondWithJson(true, 'Data inserted successfully');
 		}
 	}
 

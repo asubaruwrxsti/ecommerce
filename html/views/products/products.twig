@@ -1,130 +1,146 @@
 <div class="w-full bg-white rounded-2xl shadow-2xl mb-6 p-16">
+	<button
+		class="inline-flex justify-center rounded-md bg-blue-100 px-3 py-2 mb-5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-blue-500 sm:mt-0 sm:w-auto transition duration-500 ease-in-out"
+		data-bs-toggle="modal" data-bs-target="#addModal">Add Product</button>
 	<table class="table-auto w-full" id="products-table">
 		<thead>
 			<tr>
 				{% for header in products_header %}
-					<th class="px-4 py-2">{{ header|capitalize }}</th>
+				<th class="px-4 py-2">{{ header|capitalize }}</th>
 				{% endfor %}
 				<th class="px-4 py-2">Actions</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for product in products_data %}
-				<tr>
-					{% for key, value in product %}
-						<td class="border px-4 py-2">
-							{% if key == 'rating' %}
-								{% for i in 0..value - 1 %}
-									<span>&#9733;</span>
-								{% endfor %}
-							{% elseif key == 'comments' %}
-								{{ value|length }}
-							{% elseif key == 'image' %}
-								<img src="{{ value|default('/views/assets/img/product_default.svg') }}" alt="Product Image" class="w-16 h-16 rounded">
-							{% elseif key == 'price' %}
-								${{ value }}
-							{% elseif key == 'description' %}
-								{{ value|length > 50 ? value|slice(0, 50) ~ '...' : value }}
-							{% elseif key == 'quantity' %}
-								{{ value > 0 ? value : 'Out of stock' }}
-							{% else %}
-								{{ value }}
-							{% endif %}
-						</td>
+			<tr>
+				{% for key, value in product %}
+				<td class="border px-4 py-2">
+					{% if key == 'rating' %}
+					{% for i in 0..value - 1 %}
+					<span>&#9733;</span>
 					{% endfor %}
-					<td class="border px-4 py-2">
-						<div class="flex items-center justify-center">
-							<button class="inline-flex justify-center rounded-md bg-blue-100 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-blue-500 sm:mt-0 sm:w-auto transition duration-500 ease-in-out mr-2" data-bs-toggle="modal" data-id="{{product['id']}}" data-bs-target="#editModal">Edit</button>
-							<button class="inline-flex justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto transition duration-500 ease-in-out" data-bs-toggle="modal" data-id="{{product['id']}}" data-bs-target="#deleteModal">Delete</button>
-						</div>
-					</td>
-				</tr>
+					{% elseif key == 'comments' %}
+					{{ value|length }}
+					{% elseif key == 'image' %}
+					<img src="{{ value|default('/views/assets/img/product_default.svg') }}" alt="Product Image"
+						class="w-16 h-16 rounded">
+					{% elseif key == 'price' %}
+					${{ value }}
+					{% elseif key == 'description' %}
+					{{ value|length > 50 ? value|slice(0, 50) ~ '...' : value }}
+					{% elseif key == 'quantity' %}
+					{{ value > 0 ? value : 'Out of stock' }}
+					{% else %}
+					{{ value }}
+					{% endif %}
+				</td>
+				{% endfor %}
+				<td class="border px-4 py-2">
+					<div class="flex items-center justify-center">
+						<button
+							class="inline-flex justify-center rounded-md bg-blue-100 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-blue-500 sm:mt-0 sm:w-auto transition duration-500 ease-in-out mr-2"
+							data-bs-toggle="modal" data-id="{{product['id']}}" data-bs-target="#editModal">Edit</button>
+						<button
+							class="inline-flex justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto transition duration-500 ease-in-out"
+							data-bs-toggle="modal" data-id="{{product['id']}}"
+							data-bs-target="#deleteModal">Delete</button>
+					</div>
+				</td>
+			</tr>
 			{% endfor %}
 		</tbody>
 	</table>
 </div>
 
 <script>
-    $(document).ready(function() {
-        let products_data = {{ products_data|json_encode|raw }};
-		document.getElementById('product_image').addEventListener('change', function(e) {
-			var file = e.target.files[0];
-			var reader = new FileReader();
+	$(document).ready(function () {
+		let products_data = {{ products_data| json_encode | raw
+	}};
+	document.getElementById('product_image').addEventListener('change', function (e) {
+		var file = e.target.files[0];
+		var reader = new FileReader();
 
-			reader.onloadend = function() {
-				var blob = new Blob([reader.result], {type: file.type});
-				// Now you can use blob as you wish
-				console.log(blob);
-			};
+		reader.onloadend = function () {
+			var blob = new Blob([reader.result], { type: file.type });
+			// Now you can use blob as you wish
+			console.log(blob);
+		};
 
-			if (file) {
-				reader.readAsArrayBuffer(file);
+		if (file) {
+			reader.readAsArrayBuffer(file);
+		}
+	});
+
+	$('#editModal').on('show.bs.modal', function (event) {
+		let button = $(event.relatedTarget);
+		let id = button.data('id');
+		let product = products_data.find(product => product.id == id);
+
+		$('#product_name').val(product.name);
+		$('#product_description').val(product.description);
+		$('#product_price').val(product.price);
+		$('#product_quantity').val(product.quantity);
+	});
+
+	function updateProduct(id, data) {
+		$.ajax({
+			url: `/index.php/api/products/edit/${id}`,
+			type: 'POST',
+			data: data,
+			success: function (response) {
+				console.log(JSON.parse(response));
+				if (JSON.parse(response).status) {
+					window.location.reload();
+				}
+			},
+			error: function (error) {
+				console.log(error);
 			}
 		});
+	}
 
-        $('#editModal').on('show.bs.modal', function (event) {
-            let button = $(event.relatedTarget);
-            let id = button.data('id');
-            let product = products_data.find(product => product.id == id);
+	$('#editModal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var id = button.data('id');
+		// Extract info from data-* attributes
 
-            $('#product_name').val(product.name);
-            $('#product_description').val(product.description);
-            $('#product_price').val(product.price);
-            $('#product_quantity').val(product.quantity);
-        });
+		// Update the modal's content.
+		var modal = $(this);
+		modal.find('.modal-title').text('Edit Product ' + id);
 
-		function updateProduct(id, data) {
-			$.ajax({
-				url: `/index.php/api/products/edit/${id}`,
-				type: 'POST',
-				data: data,
-				success: function(response) {
-					console.log(response);
-				},
-				error: function(error) {
-					console.log(error);
-				}
-			});
-		}
+		// You can also populate the form fields here using the id
 
-		$('#editModal').on('show.bs.modal', function (event) {
-			var button = $(event.relatedTarget); // Button that triggered the modal
-			var id = button.data('id'); // Extract info from data-* attributes
+		// Move your click event inside the show.bs.modal event
+		modal.find('button.btn-primary').click(function () {
+			let data = {
+				name: $('#product_name').val(),
+				description: $('#product_description').val(),
+				price: $('#product_price').val(),
+				quantity: $('#product_quantity').val(),
+				image: $('#product_image').val()
+			};
 
-			// Update the modal's content.
-			var modal = $(this);
-			modal.find('.modal-title').text('Edit Product ' + id);
-
-			// You can also populate the form fields here using the id
-
-			// Move your click event inside the show.bs.modal event
-			modal.find('button.btn-primary').click(function() {
-				let data = {
-					name: $('#product_name').val(),
-					description: $('#product_description').val(),
-					price: $('#product_price').val(),
-					quantity: $('#product_quantity').val(),
-					image: $('#product_image').val()
-				};
-
-				updateProduct(id, data);
-			});
+			
+			document.getElementById('save-changes').innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+			updateProduct(id, data);
 		});
+	});
 
-		$('#deleteModal button.btn-primary').click(function() {
-			let id = $('#deleteModal button.btn-primary').data('id');
-			$.ajax({
-				url: `/products/${id}`,
-				type: 'DELETE',
-				success: function(response) {
-					window.location.reload();
-				},
-				error: function(error) {
-					console.log(error);
-				}
-			});
+	$('#deleteModal button.btn-primary').click(function () {
+		let id = $('#deleteModal button.btn-primary').data('id');
+		$.ajax({
+			url: `/products/${id}`,
+			type: 'DELETE',
+			success: function (response) {
+				window.location.reload();
+			},
+			error: function (error) {
+				console.log(error);
+			}
 		});
-    });
+	});
+});
 </script>
 
 <!-- Modal -->
@@ -146,7 +162,8 @@
 							<br>
 
 							<label for="product_description" class="form-label">Product Description</label>
-							<textarea class="form-control" id="product_description" name="product_description"></textarea>
+							<textarea class="form-control" id="product_description"
+								name="product_description"></textarea>
 
 							<br>
 
@@ -165,29 +182,78 @@
 
 						</form>
 					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
-				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="save-changes">Save changes</button>
 			</div>
 		</div>
 	</div>
+</div>
+</div>
 
-	<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="exampleModalLabel">Delete</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					...
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
-				</div>
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">Delete</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				...
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
 			</div>
 		</div>
 	</div>
+</div>
+
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">Add</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form action="" method="post">
+					<div class="mb-3">
+						<form action="" method="post" enctype="multipart/form-data">
+
+							<label for="product_name" class="form-label">Product Name</label>
+							<input type="text" class="form-control" id="product_name" name="product_name">
+
+							<br>
+
+							<label for="product_description" class="form-label">Product Description</label>
+							<textarea class="form-control" id="product_description"
+								name="product_description"></textarea>
+
+							<br>
+
+							<label for="product_price" class="form-label">Product Price</label>
+							<input type="text" class="form-control" id="product_price" name="product_price">
+
+							<br>
+
+							<label for="product_quantity" class="form-label">Product Quantity</label>
+							<input type="number" class="form-control" id="product_quantity" name="product_quantity">
+
+							<br>
+
+							<label for="product_image" class="form-label">Product Image</label>
+							<input type="file" class="form-control" id="product_image" name="product_image">
+
+						</form>
+					</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
