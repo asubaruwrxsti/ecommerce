@@ -49,7 +49,7 @@ class API
 				$this->handlePost($property, $id);
 				break;
 			case 'DELETE':
-				$this->handleDelete($property);
+				$this->handleDelete($property, $id);
 				break;
 			default:
 				http_response_code(405);
@@ -100,17 +100,10 @@ class API
 		}
 	}
 
-	private function handleDelete($property)
+	private function handleDelete($property, $id)
 	{
-		$property_name = $property[0];
-		$id = isset($property[1]) ? $property[1] : null;
-		$query = "DELETE FROM $property_name WHERE id = $id";
+		$query = "DELETE FROM $property WHERE id = $id";
 		$result = $this->db->execute_query($query);
-
-		if ($result) {
-			return respondWithJson(true, 'Data deleted successfully');
-		} else {
-			return respondWithJson(false, 'Error deleting data');
-		}
+		return respondWithJson(true, 'Data deleted successfully');
 	}
 }
