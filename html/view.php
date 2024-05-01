@@ -110,6 +110,20 @@ class View
 
 	public function render_sales($handler, $params)
 	{
+		$sales = $params["db"]->execute_query("SELECT * FROM sales JOIN products ON sales.product = products.id");
+		$products = $params["db"]->execute_query("SELECT * FROM products");
+		$comments = $params["db"]->execute_query("SELECT id, comments FROM products");
+		$data = [
+			'user' => $params["session"]->get('user'),
+			'sales' => $params["db"]->execute_query("SELECT * FROM sales"),
+			'currency' => $_SESSION['currency'],
+			'products' => $products,
+			'products_header' => array_keys($products[0]),
+			'sales' => $sales,
+			'sales_header' => array_keys($sales[0]),
+			'comments' => $comments,
+			// Add more data as needed
+		];
 		$this->render($handler);
 	}
 

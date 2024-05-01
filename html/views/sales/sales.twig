@@ -1,1 +1,22 @@
-this is sales
+{{sales}}
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<div class="container mt-5">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				{% for header in sales_header %}
+					<th scope="col">{{ header }}</th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for sale in sales %}
+				<tr>
+					{% for value in sale %}
+						<td>{{ value }}</td>
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

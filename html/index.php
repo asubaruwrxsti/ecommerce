@@ -38,12 +38,12 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
 	});
 
 	$r->addGroup('/index.php/api', function ($r) {
-		// CREATE / READ
+		// READ
 		$r->addRoute('GET', '/{property}/', 'api');
 		$r->addRoute('GET', '/{property}/{id:\d+}', 'api');
 
-		// UPDATE / DELETE
-		$r->addRoute(['POST', 'DELETE'], '/{property}/edit/', 'api');
+		// CREATE / UPDATE / DELETE
+		$r->addRoute(['POST'], '/{property}/edit/', 'api');
 		$r->addRoute(['POST', 'DELETE'], '/{property}/edit/{id:\d+}', 'api');
 	});
 });
