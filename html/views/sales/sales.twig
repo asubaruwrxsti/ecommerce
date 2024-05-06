@@ -53,13 +53,17 @@
 
 			// Update the modal body with the product, date and revenue
 			let modalBody = document.querySelector('.modal-body');
-			modalBody.innerHTML = `
+
+			let saleDetailsHtml = all_sale_details.map(saleDetails => `
 				<p>Product: ${saleDetails.name}</p>
 				<p>Date: ${saleDetails.date}</p>
 				<p>Quantity: ${saleDetails.price != 0 ? (saleDetails.revenue / saleDetails.price).toFixed(2) : 'N/A'}</p>
 				<p>Price: ${saleDetails.price}</p>
 				<p>Total: ${saleDetails.revenue}</p>
-			`;
+				<hr>
+			`);
+
+			modalBody.innerHTML = saleDetailsHtml.join('');
 
 			// Open the modal
 			var myModal = new bootstrap.Modal(document.getElementById('detailsModal'));
