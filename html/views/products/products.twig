@@ -58,8 +58,6 @@
 		let products_data = {{ products_data| json_encode | raw
 	}};
 
-	// ----------- ADD -----------
-
 	// ----------- EDIT -----------  
 	document.getElementById('edit-product_image').addEventListener('change', function (e) {
 		var file = e.target.files[0];
@@ -272,6 +270,7 @@
 
 						</form>
 					</div>
+				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -279,7 +278,6 @@
 			</div>
 		</div>
 	</div>
-</div>
 </div>
 
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

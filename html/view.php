@@ -110,21 +110,22 @@ class View
 
 	public function render_sales($handler, $params)
 	{
-		$sales = $params["db"]->execute_query("SELECT * FROM sales JOIN products ON sales.product = products.id");
+		$sales = $params["db"]->execute_query("SELECT sales.date AS 'Sales Date', COUNT(*) AS 'Number of Sales', SUM(sales.revenue) AS 'Revenue' FROM sales JOIN products ON sales.product = products.id GROUP BY sales.date");
+		$sale_details = $params["db"]->execute_query("SELECT * FROM sales JOIN products ON sales.product = products.id");
 		$products = $params["db"]->execute_query("SELECT * FROM products");
 		$comments = $params["db"]->execute_query("SELECT id, comments FROM products");
 		$data = [
 			'user' => $params["session"]->get('user'),
-			'sales' => $params["db"]->execute_query("SELECT * FROM sales"),
 			'currency' => $_SESSION['currency'],
 			'products' => $products,
 			'products_header' => array_keys($products[0]),
 			'sales' => $sales,
 			'sales_header' => array_keys($sales[0]),
+			'sale_details' => $sale_details,
 			'comments' => $comments,
 			// Add more data as needed
 		];
-		$this->render($handler);
+		$this->render($handler, $data);
 	}
 
 	public function render_clients($handler, $params)
