@@ -36,7 +36,7 @@ class API
 			http_response_code(403);
 			echo json_encode(array(
 				'status' => false,
-				'message' => 'Not permittedssssssssssssssssssss'
+				'message' => 'Not permitted'
 			));
 			return;
 		}
