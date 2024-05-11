@@ -46,6 +46,8 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
 		$r->addRoute(['POST'], '/{property}/edit/', 'api');
 		$r->addRoute(['POST', 'DELETE'], '/{property}/edit/{id:\d+}', 'api');
 	});
+
+	$r->addRoute('GET', '/index.php/logout/', 'logout');
 });
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];
