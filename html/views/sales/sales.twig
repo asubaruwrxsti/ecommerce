@@ -25,7 +25,7 @@
 						<td class="border border-black px-4 py-2 text-center" data-index="{{ loop.index0 }}">{{ value }}</td>
 					{% endfor %}
 					<td class="border border-black px-4 py-2 text-center">
-						<button id="detailsButton" data-id={{ loop.index }}  class="inline-flex justify-center rounded-md bg-blue-100 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-blue-500 sm:mt-0 sm:w-auto transition duration-500 ease-in-out mr-2">Details</button>
+						<button id="detailsButton" data-date="{{ sale['Sales Date'] }}"  class="inline-flex justify-center rounded-md bg-blue-100 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-blue-500 sm:mt-0 sm:w-auto transition duration-500 ease-in-out mr-2">Details</button>
 					</td>
 				</tr>
 			{% endfor %}
@@ -72,6 +72,15 @@
 						<label for="quantity" class="form-label">Quantity</label>
 						<input type="number" class="form-control" id="quantity" name="quantity" value="1">
 					</div>
+					<div class="mb-3">
+						<label for="client" class="form-label">Client</label>
+						<select class="form-select" id="client" name="client">
+							<option value="">None</option>
+							{% for client in clients %}
+								<option value="{{ client.id }}">{{ client.fname }} {{ client.lname }}</option>
+							{% endfor %}
+						</select>
+					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
@@ -85,6 +94,7 @@
 <script>
 	let all_sale_details = {{ sale_details|json_encode|raw }};
 	let all_products = {{ products|json_encode|raw }};
+	let all_clients = {{ clients|json_encode|raw }};
 
 	// Get all the details buttons
 	var detailsButtons = document.querySelectorAll('[id^="detailsButton"]');
@@ -92,26 +102,32 @@
 	// For each button, add an event listener
 	detailsButtons.forEach(function(button) {
 		button.addEventListener('click', function() {
-			// Get the sale details for this row
-			let saleId = button.getAttribute('data-id');
+			// Get the sale date for this row
+			let saleDate = button.getAttribute('data-date');
 
-			// Find the sale detail that has the id
-			let saleDetails = all_sale_details.find(function(sale) {
-				return sale.id == saleId;
+			// Find all sale details that have this date
+			let saleDetailsForDate = all_sale_details.filter(function(sale) {
+				return sale.date == saleDate;
 			});
-			console.log(saleDetails);
 
 			// Update the modal body with the product, date and revenue
 			let modalBody = document.querySelector('.modal-body');
 
-			let saleDetailsHtml = all_sale_details.map(saleDetails => `
-				<p>Product: ${saleDetails.name}</p>
-				<p>Date: ${saleDetails.date}</p>
-				<p>Quantity: ${saleDetails.price != 0 ? (saleDetails.revenue / saleDetails.price).toFixed(2) : 'N/A'}</p>
-				<p>Price: ${saleDetails.price}</p>
-				<p>Total: ${saleDetails.revenue}</p>
-				<hr>
-			`);
+			let saleDetailsHtml = saleDetailsForDate.map(saleDetails => {
+				// Find the client for this sale
+				let client = all_clients.find(client => client.id == saleDetails.clientid);
+				let clientName = client ? client.fname + ' ' + client.lname : 'General Client';
+
+				return `
+					<p>Product: ${saleDetails.name}</p>
+					<p>Date: ${saleDetails.date}</p>
+					<p>Client: ${clientName}</p>
+					<p>Quantity: ${saleDetails.price != 0 ? (saleDetails.revenue / saleDetails.price).toFixed(2) : 'N/A'}</p>
+					<p>Price: ${saleDetails.price}</p>
+					<p>Total: ${saleDetails.revenue}</p>
+					<hr>
+				`;
+			});
 
 			modalBody.innerHTML = saleDetailsHtml.join('');
 
@@ -130,9 +146,9 @@
 		let data = {
 			product: document.getElementById('product').value,
 			revenue: (all_products.find(product => product.id == document.getElementById('product').value).price) * document.getElementById('quantity').value,
-			date: new Date().toISOString().split('T')[0]
+			date: new Date().toISOString().split('T')[0],
+			clientid: document.getElementById('client').value !== 'None' ? document.getElementById('client').value : null
 		};
-		console.log(data);
 
 		$.ajax({
 			url: `/index.php/api/sales/edit/`,

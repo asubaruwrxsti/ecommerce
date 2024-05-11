@@ -110,10 +110,15 @@ class View
 
 	public function render_sales($handler, $params)
 	{
-		$sales = $params["db"]->execute_query("SELECT sales.date AS 'Sales Date', COUNT(*) AS 'Number of Sales', SUM(sales.revenue) AS 'Revenue' FROM sales JOIN products ON sales.product = products.id GROUP BY sales.date");
-		$sale_details = $params["db"]->execute_query("SELECT * FROM sales JOIN products ON sales.product = products.id");
+		$sales = $params["db"]->execute_query("
+			SELECT sales.date AS 'Sales Date', COUNT(*) AS 'Number of Sales', SUM(sales.revenue) AS 'Revenue'
+			FROM sales
+			JOIN products ON sales.product = products.id
+			GROUP BY sales.date");
+		$sale_details = $params["db"]->execute_query("SELECT * FROM sales JOIN products ON sales.product = products.id LEFT JOIN clients ON sales.clientid = clients.id");
 		$products = $params["db"]->execute_query("SELECT * FROM products");
 		$comments = $params["db"]->execute_query("SELECT id, comments FROM products");
+		$clients = $params["db"]->execute_query("SELECT * FROM clients");
 		$data = [
 			'user' => $params["session"]->get('user'),
 			'currency' => $_SESSION['currency'],
@@ -123,6 +128,7 @@ class View
 			'sales_header' => array_keys($sales[0]),
 			'sale_details' => $sale_details,
 			'comments' => $comments,
+			'clients' => $clients,
 			// Add more data as needed
 		];
 		$this->render($handler, $data);
@@ -130,11 +136,31 @@ class View
 
 	public function render_clients($handler, $params)
 	{
-		$this->render($handler);
+		$clients = $params["db"]->execute_query("SELECT id, fname AS 'First Name', lname AS 'Last Name' FROM clients");
+		$client_sales = $params["db"]->execute_query("SELECT * FROM sales JOIN clients ON sales.clientid = clients.id");
+		$data = [
+			'user' => $params["session"]->get('user'),
+			'clients' => $clients,
+			'clients_header' => array_keys($clients[0]),
+			'client_sales' => $client_sales,
+			// Add more data as needed
+		];
+
+		$this->render($handler, $data);
 	}
 
 	public function render_messages($handler, $params)
 	{
-		$this->render($handler);
+		$active_messages = $params["db"]->execute_query("SELECT id, fname || ' ' || lname AS 'Full Name', email AS 'Email', phone AS 'Phone', message AS 'Message', date AS 'Date' FROM messages WHERE archived = '0'");
+		$archived_messages = $params["db"]->execute_query("SELECT id, fname || ' ' || lname AS 'Full Name', email AS 'Email', phone AS 'Phone', message AS 'Message', date AS 'Date' FROM messages WHERE archived = '1'");
+		$messages_header = !empty($active_messages) ? array_keys($active_messages[0]) : [];
+		$data = [
+			'user' => $params["session"]->get('user'),
+			'all_messages' => $active_messages,
+			'archived_messages' => $archived_messages,
+			'messages_header' => $messages_header,
+			// Add more data as needed
+		];
+		$this->render($handler, $data);
 	}
 }
