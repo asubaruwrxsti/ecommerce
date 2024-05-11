@@ -77,10 +77,23 @@ class View
 			'user' => $params["session"]->get('user'),
 			'products' => $products,
 			'currency' => $_SESSION['currency'],
-			'sales' => $params["db"]->execute_query("SELECT * FROM sales LIMIT 5"),
-			// 'growth' => calculateGrowth($params["db"], 'sales'),
-			'growth' => '10',
-			// Add more data as needed
+			'sales' => $params["db"]->execute_query("
+			SELECT sales.date, products.name AS 'Product', IFNULL(clients.fname, 'N/A') AS 'Client Name', sales.revenue AS 'Revenue'
+			FROM sales
+			LEFT JOIN clients ON sales.clientid = clients.id
+			JOIN products ON sales.product = products.id
+			ORDER BY sales.date DESC
+			LIMIT 15
+			"),
+			'sales_last_week' => $params["db"]->execute_query("
+			SELECT sales.date, products.name AS 'Product', IFNULL(clients.fname, 'N/A') AS 'Client Name', sales.revenue AS 'Revenue'
+			FROM sales
+			LEFT JOIN clients ON sales.clientid = clients.id
+			JOIN products ON sales.product = products.id
+			WHERE sales.date >= date('now','-7 day')
+			ORDER BY sales.date DESC
+			LIMIT 5
+			"),
 		];
 
 		$this->render($handler, $data);
