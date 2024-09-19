@@ -14,9 +14,9 @@ require_once 'handlers/handlerFactory.php';
 
 $session = Session::getInstance();
 $session->start();
-if (!$session->isLoggedIn()) {
-	header("Location: /login.php");
-}
+// if (!$session->isLoggedIn()) {
+// 	header("Location: /login.php");
+// }
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
