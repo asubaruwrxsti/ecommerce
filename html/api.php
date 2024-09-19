@@ -70,6 +70,14 @@ class API
 
 	private function handlePost($property_name, $id = null)
 	{
+		if (strpos($_SERVER['REQUEST_URI'], 'rate/comment') !== false) {
+			$this->handleRate($property_name, 'comment');
+			return;
+		} else if (strpos($_SERVER['REQUEST_URI'], 'rate/star') !== false) {
+			$this->handleRate($property_name, 'rating');
+			return;
+		}
+
 		$query_type = ($id == null) ? 'INSERT INTO %s (%s) VALUES (%s)' : 'UPDATE %s SET %s WHERE id = %s';
 		$data = $_POST;
 
@@ -100,10 +108,42 @@ class API
 		}
 	}
 
+	public function handleRate($property, $type)
+	{
+		if ($type == 'rating') {
+			$contentType = isset($_SERVER['CONTENT_TYPE']) ? strtolower($_SERVER['CONTENT_TYPE']) : '';
+			if ($contentType === 'application/json') {
+				$data = json_decode(file_get_contents('php://input'), true);
+				if (json_last_error() !== JSON_ERROR_NONE) {
+					return respondWithJson(false, 'Invalid JSON input');
+				}
+			} else {
+				$data = $_POST;
+			}
+
+			$rating = (string)$data['rating'];
+
+			$query = "SELECT $type FROM products WHERE id = $property";
+			$result = $this->db->execute_query($query);
+
+			if (!$result) {
+				return respondWithJson(false, 'Product not found');
+			}
+
+			$currentRating = (string)$result[$type];
+			$newRating = (string)ceil(((int)$currentRating + (int)$rating) / 2);
+			
+			$updateQuery = "UPDATE products SET `$type` = '$newRating' WHERE id = $property";
+			$this->db->execute_query($updateQuery);
+
+			return respondWithJson(true, 'Rating updated successfully');
+		}
+	}
+
 	private function handleDelete($property, $id)
 	{
 		$query = "DELETE FROM $property WHERE id = $id";
-		$result = $this->db->execute_query($query);
+		$this->db->execute_query($query);
 		return respondWithJson(true, 'Data deleted successfully');
 	}
 }

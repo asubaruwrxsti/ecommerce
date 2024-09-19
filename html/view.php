@@ -18,6 +18,7 @@ class View
 	private $twig;
 	private $header;
 	private $base;
+	private $public;
 	private $footer;
 	private $db;
 
@@ -29,6 +30,7 @@ class View
 
 		$this->header = $this->twig->load('header.twig');
 		$this->base = $this->twig->load('base.twig');
+		$this->public = $this->twig->load('public.twig');
 		$this->footer = $this->twig->load('footer.twig');
 
 		$this->db = DB::getInstance("database.sqlite3");
@@ -69,8 +71,22 @@ class View
 		echo $this->footer->render();
 	}
 
+	public function public_render($viewName, $data = [])
+	{
+		$viewFile = $this->viewsDir . '/' . $viewName . '/' . $viewName . '.twig';
+		if (!file_exists($viewFile)) {
+			throw new Exception("View file not found: $viewFile");
+		}
+
+		echo $this->public->render([
+			'window_title' => strtoupper($viewName),
+			'content' => sprintf('%s/%s.twig', strtolower($viewName), strtolower($viewName)),
+			'vars' => $data,
+		]);
+	}
+
 	public function render_dashboard($handler, $params)
-	{	
+	{
 		// Fetch data for the dashboard
 		$products = $params["db"]->execute_query("SELECT * FROM products");
 		$data = [
@@ -110,14 +126,14 @@ class View
 		} else {
 			$products_header = [];
 		}
-	
+
 		$data = [
 			'user' => $params["session"]->get('user'),
 			'products_header' => $products_header,
 			'products_data' => $products,
 			'currency' => $_SESSION['currency'],
 		];
-		
+
 		$this->render($handler, $data);
 	}
 
@@ -151,12 +167,13 @@ class View
 	{
 		$clients = $params["db"]->execute_query("SELECT id, fname AS 'First Name', lname AS 'Last Name' FROM clients");
 		$client_sales = $params["db"]->execute_query("SELECT * FROM sales JOIN clients ON sales.clientid = clients.id");
+		$clients_header = !empty($clients) ? array_keys($clients[0]) : [];
+
 		$data = [
 			'user' => $params["session"]->get('user'),
 			'clients' => $clients,
-			'clients_header' => array_keys($clients[0]),
+			'clients_header' => $clients_header,
 			'client_sales' => $client_sales,
-			// Add more data as needed
 		];
 
 		$this->render($handler, $data);
@@ -176,4 +193,34 @@ class View
 		];
 		$this->render($handler, $data);
 	}
+
+	public function render_public_index($handler, $params)
+	{
+		$products = $params["db"]->execute_query("SELECT * FROM products");
+		$popular_products = $params["db"]->execute_query("SELECT * FROM products ORDER BY rating DESC LIMIT 5");
+		$data = [
+			'products' => $products,
+			'popular_products' => $popular_products,
+			'currency' => "Leke",
+		];
+			
+		$this->public_render($handler, $data);
+	}
+
+	public function render_public_shop($handler, $params)
+	{
+		$products = $params["db"]->execute_query("SELECT * FROM products");
+		$data = [
+			'products' => $products,
+			'currency' => "Leke",
+		];
+			
+		$this->public_render($handler, $data);
+	}
+
+	public function render_public_contact($handler, $params)
+	{
+		$this->public_render($handler);
+	}
+
 }

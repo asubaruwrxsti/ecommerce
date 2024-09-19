@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 	$twig = new \Twig\Environment($loader);
 
 	if (isset($_SESSION['is_loggedin'])) {
-		header("Location: /index.php/");
+		header("Location: /index.php/admin/");
 		die();
 	}
 
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$username = $purifier->purify($_POST['username']);
 	$password = $purifier->purify($_POST['password']);
 
-	$result = $db->execute_query("SELECT * FROM users WHERE username = ? LIMIT 1", [$username]);
+	$result = $db->execute_query("SELECT users.*, currency.name as 'c.name' FROM users JOIN currency ON users.currency = currency.id WHERE users.username = 'admin';", [$username]);
 
 	if (count($result) > 0) {
 		$row = $result[0];
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				$_SESSION['group_id'] = $row['group'];
 				$_SESSION['username'] = $username;
 				$_SESSION['is_loggedin'] = true;
-				$_SESSION['currency'] = $row['currency'];
+				$_SESSION['currency'] = $row['c.name'];
 				$db->create_session_id($row['id']);
 
 				setcookie('username', $username, time() + 3600, '/');

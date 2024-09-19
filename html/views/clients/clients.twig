@@ -13,23 +13,31 @@
 				{% for header in clients_header %}
 					<th class="border border-black px-4 py-2 text-center">{{ header }}</th>
 				{% endfor %}
-				<th class="border border-black px-4 py-2 text-center">Actions</th>
+				{% if clients_header|length > 0 %}
+					<th class="border border-black px-4 py-2 text-center">Actions</th>
+				{% endif %}
 			</tr>
 		</thead>
 		<tbody>
-			{% for client in clients %}
+			{% if clients is empty %}
 				<tr>
-					{% for header in clients_header %}
-						<td class="border px-4 py-2">{{ client[header] }}</td>
-					{% endfor %}
-					<td class="border px-4 py-2">
-						<div class="flex items-center justify-center">
-							<button class="inline-flex justify-center rounded-md bg-blue-100 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-blue-500 sm:mt-0 sm:w-auto transition duration-500 ease-in-out mr-2" data-bs-toggle="modal" data-id="{{client['id']}}" data-bs-target="#editModal" id="editButton">Edit</button>
-							<button class="inline-flex justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto transition duration-500 ease-in-out" data-bs-toggle="modal" data-id="{{client['id']}}" data-bs-target="#deleteModal" id="deleteButton">Delete</button>
-						</div>
-					</td>
+					<td class="border px-4 py-2 text-center" colspan="{{ clients_header|length + 1 }}">No clients</td>
 				</tr>
-			{% endfor %}
+			{% else %}
+				{% for client in clients %}
+					<tr>
+						{% for header in clients_header %}
+							<td class="border px-4 py-2">{{ client[header] }}</td>
+						{% endfor %}
+						<td class="border px-4 py-2">
+							<div class="flex items-center justify-center">
+								<button class="inline-flex justify-center rounded-md bg-blue-100 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-blue-500 sm:mt-0 sm:w-auto transition duration-500 ease-in-out mr-2" data-bs-toggle="modal" data-id="{{client['id']}}" data-bs-target="#editModal" id="editButton">Edit</button>
+								<button class="inline-flex justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto transition duration-500 ease-in-out" data-bs-toggle="modal" data-id="{{client['id']}}" data-bs-target="#deleteModal" id="deleteButton">Delete</button>
+							</div>
+						</td>
+					</tr>
+				{% endfor %}
+			{% endif %}
 		</tbody>
 	</table>
 </div>
@@ -45,7 +53,7 @@
 			<div class="modal-body"></div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="saveEditModal" class="btn btn-primary">Save changes</button>
+				<button type="button" id="saveEditModal" class="btn btn-primary">Save changes</button>
 			</div>
 		</div>
 	</div>
@@ -53,95 +61,92 @@
 
 <!-- Delete Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this client?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="deleteClient" class="btn btn-danger">Delete</button>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">Delete</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to delete this client?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" id="deleteClient" class="btn btn-danger">Delete</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Create Modal -->
 <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Create</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="createClientForm">
-                    <div class="mb-3">
-                        <label for="fname" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="fname" name="fname">
-                    </div>
-                    <div class="mb-3">
-                        <label for="lname" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="lname" name="lname">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="saveCreateModal" class="btn btn-primary">Create</button>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">Create</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="createClientForm">
+					<div class="mb-3">
+						<label for="fname" class="form-label">First Name</label>
+						<input type="text" class="form-control" id="fname" name="fname">
+					</div>
+					<div class="mb-3">
+						<label for="lname" class="form-label">Last Name</label>
+						<input type="text" class="form-control" id="lname" name="lname">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" id="saveCreateModal" class="btn btn-primary">Create</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script>
-    let all_client_sales = {{ client_sales|raw|json_encode|raw }};
-    let all_clients = {{ clients|raw|json_encode|raw }};
+	let all_client_sales = {{ client_sales|raw|json_encode|raw }};
+let all_clients = {{ clients|raw|json_encode|raw }};
 
-    // Select the input field
-    const filterInput = document.getElementById('clientFilter');
+// Select the input field
+const filterInput = document.getElementById('clientFilter');
 
-    // Add an event listener to the input field
-    filterInput.addEventListener('keyup', function() {
-        // Get the value of the input field
-        const filterValue = this.value.toLowerCase();
+// Add an event listener to the input field
+filterInput.addEventListener('keyup', function () { // Get the value of the input field
+const filterValue = this.value.toLowerCase();
 
-        // Select all table rows in the body of the table
-        const rows = document.querySelectorAll('.table-auto tbody tr');
+// Select all table rows in the body of the table
+const rows = document.querySelectorAll('.table-auto tbody tr');
 
-        // Loop through each table row
-        rows.forEach(row => {
-            // Get the text content of the first and last name cells
-            const firstName = row.cells[0].textContent.toLowerCase();
-            const lastName = row.cells[1].textContent.toLowerCase();
+// Loop through each table row
+rows.forEach(row => { // Get the text content of the first and last name cells
+const firstName = row.cells[0].textContent.toLowerCase();
+const lastName = row.cells[1].textContent.toLowerCase();
 
-            // If the text content of either cell includes the input value, show the row. Otherwise, hide the row.
-            if (firstName.includes(filterValue) || lastName.includes(filterValue)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    });
+// If the text content of either cell includes the input value, show the row. Otherwise, hide the row.
+if (firstName.includes(filterValue) || lastName.includes(filterValue)) {
+row.style.display = '';
+} else {
+row.style.display = 'none';
+}
+});
+});
 
-    // Select all edit buttons
-    const editButtons = document.querySelectorAll('[id^="editButton"]');
+// Select all edit buttons
+const editButtons = document.querySelectorAll('[id^="editButton"]');
 
-    // Add click event listener to each edit button
-    editButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Get the client id from the button's data-id attribute
-            const clientId = this.getAttribute('data-id');
-            c_first_name = all_clients.find(client => client['id'] == clientId)['First Name'];
-            c_last_name = all_clients.find(client => client['id'] == clientId)['Last Name'];
-            
-            // make a form in modal body to edit the first name and last name of the client
-            const modalBody = document.querySelector('#editModal .modal-body');
-            modalBody.innerHTML = `
+// Add click event listener to each edit button
+editButtons.forEach(button => {
+button.addEventListener('click', function () { // Get the client id from the button's data-id attribute
+const clientId = this.getAttribute('data-id');
+c_first_name = all_clients.find(client => client['id'] == clientId)['First Name'];
+c_last_name = all_clients.find(client => client['id'] == clientId)['Last Name'];
+
+// make a form in modal body to edit the first name and last name of the client
+const modalBody = document.querySelector('#editModal .modal-body');
+modalBody.innerHTML = `
                 <form id="editClientForm">
                     <div class="mb-3">
                         <label for="fname" class="form-label">First Name</label>
@@ -154,87 +159,88 @@
                 </form>
             `;
 
-            // Add event listener to the form
-            document.querySelector('#saveEditModal').addEventListener('click', function(e) {
-                e.preventDefault(); // Prevent the form from submitting normally
+// Add event listener to the form
+document.querySelector('#saveEditModal').addEventListener('click', function (e) {
+e.preventDefault();
+// Prevent the form from submitting normally
 
-                // Get the form data
-                const data = {
-                    fname: document.querySelector('#fname').value,
-                    lname: document.querySelector('#lname').value
-                };
-                
-                $.ajax({
-                    url: `/index.php/api/clients/edit/${clientId}`,
-                    type: 'POST',
-                    data: data,
-                    success: function (response) {
-                        if (JSON.parse(response).status) {
-                            window.location.reload();
-                        }
-                    },
-                    error: function (error) {
-                        console.log(error);
-                    }
-                });
-            });
-        });
-    });
+// Get the form data
+const data = {
+fname: document.querySelector('#fname').value,
+lname: document.querySelector('#lname').value
+};
 
-    // Select all delete buttons
-    const deleteButtons = document.querySelectorAll('[id^="deleteClient"]');
-    const deleteModal = document.getElementById('deleteModal');
-    let clientId;
+$.ajax({
+url: `/index.php/api/clients/edit/${clientId}`,
+type: 'POST',
+data: data,
+success: function (response) {
+if (JSON.parse(response).status) {
+window.location.reload();
+}
+},
+error: function (error) {
+console.log(error);
+}
+});
+});
+});
+});
 
-    deleteModal.addEventListener('show.bs.modal', function(event) {
-        // Button that triggered the modal
-        const button = event.relatedTarget;
+// Select all delete buttons
+const deleteButtons = document.querySelectorAll('[id^="deleteClient"]');
+const deleteModal = document.getElementById('deleteModal');
+let clientId;
 
-        // Extract info from data-id attribute
-        clientId = button.getAttribute('data-id');
-    });
+deleteModal.addEventListener('show.bs.modal', function (event) { // Button that triggered the modal
+const button = event.relatedTarget;
 
-    // Add click event listener to each delete button
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', function() {
+// Extract info from data-id attribute
+clientId = button.getAttribute('data-id');
+});
 
-            $.ajax({
-                url: `/index.php/api/clients/edit/${clientId}`,
-                type: 'DELETE',
-                success: function (response) {
-                    if (JSON.parse(response).status) {
-                        window.location.reload();
-                    }
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
-        });
-    });
+// Add click event listener to each delete button
+deleteButtons.forEach(button => {
+button.addEventListener('click', function () {
 
-    let createClientForm = document.getElementById('saveCreateModal');
-    createClientForm.addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent the form from submitting normally
+$.ajax({
+url: `/index.php/api/clients/edit/${clientId}`,
+type: 'DELETE',
+success: function (response) {
+if (JSON.parse(response).status) {
+window.location.reload();
+}
+},
+error: function (error) {
+console.log(error);
+}
+});
+});
+});
 
-        // Get the form data
-        const data = {
-            fname: document.querySelector('#fname').value,
-            lname: document.querySelector('#lname').value
-        };
+let createClientForm = document.getElementById('saveCreateModal');
+createClientForm.addEventListener('click', function (e) {
+e.preventDefault();
+// Prevent the form from submitting normally
 
-        $.ajax({
-            url: `/index.php/api/clients/edit/`,
-            type: 'POST',
-            data: data,
-            success: function (response) {
-                if (JSON.parse(response).status) {
-                    window.location.reload();
-                }
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
-    });
+// Get the form data
+const data = {
+fname: document.querySelector('#fname').value,
+lname: document.querySelector('#lname').value
+};
+
+$.ajax({
+url: `/index.php/api/clients/edit/`,
+type: 'POST',
+data: data,
+success: function (response) {
+if (JSON.parse(response).status) {
+window.location.reload();
+}
+},
+error: function (error) {
+console.log(error);
+}
+});
+});
 </script>

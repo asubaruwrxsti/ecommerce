@@ -29,12 +29,18 @@ $api = API::getInstance($db);
 $view = View::getInstance('./views');
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
-	$r->addGroup('/index.php', function ($r) {
-		$r->addRoute('GET', '/', 'dashboard');
-		$r->addRoute('GET', '/products/', 'products');
-		$r->addRoute('GET', '/sales/', 'sales');
-		$r->addRoute('GET', '/clients/', 'clients');
-		$r->addRoute('GET', '/messages/', 'messages'); 
+	$r->addGroup('/index.php/admin/', function ($r) {
+		$r->addRoute('GET', '', 'dashboard');
+		$r->addRoute('GET', 'products/', 'products');
+		$r->addRoute('GET', 'sales/', 'sales');
+		$r->addRoute('GET', 'clients/', 'clients');
+		$r->addRoute('GET', 'messages/', 'messages');
+	});
+
+	$r->addGroup('/index.php/', function ($r) {
+		$r->addRoute('GET', '', 'public_index');
+		$r->addRoute('GET', 'shop/', 'public_shop');
+		$r->addRoute('GET', 'contact/', 'public_contact');
 	});
 
 	$r->addGroup('/index.php/api', function ($r) {
@@ -45,6 +51,10 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
 		// CREATE / UPDATE / DELETE
 		$r->addRoute(['POST'], '/{property}/edit/', 'api');
 		$r->addRoute(['POST', 'DELETE'], '/{property}/edit/{id:\d+}', 'api');
+
+		// RATE
+		$r->addRoute(['POST'], '/{property}/rate/comment', 'api');
+		$r->addRoute(['POST'], '/{property}/rate/star', 'api');
 	});
 
 	$r->addRoute('GET', '/index.php/logout/', 'logout');

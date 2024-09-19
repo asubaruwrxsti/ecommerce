@@ -79,16 +79,13 @@
 		let id = button.data('id');
 		let product = products_data.find(product => product.id == id);
 
-		$('#product_name').val(product.name);
-		$('#product_description').val(product.description);
-		$('#product_price').val(product.price);
-		$('#product_quantity').val(product.quantity);
+		$('#edit-product_name').val(product.name);
+		$('#edit-product_description').val(product.description);
+		$('#edit-product_price').val(product.price);
+		$('#edit-product_quantity').val(product.quantity);
 	});
 
 	function updateProduct(id, data) {
-		console.log("updateProduct called");
-		console.log(data);
-
 		$.ajax({
 			url: `/index.php/api/products/edit/${id}`,
 			type: 'POST',
@@ -106,24 +103,33 @@
 	}
 
 	$('#editModal').on('show.bs.modal', function (event) {
-		var button = $(event.relatedTarget); // Button that triggered the modal
-		var id = button.data('id');
-		var modal = $(this);
+		const button = $(event.relatedTarget); // Button that triggered the modal
+		const id = button.data('id');
+		const modal = $(this);
 		modal.find('.modal-title').text('Edit Product ' + id);
 
-		var reader = new FileReader();
+		const reader = new FileReader();
+
+		let data = {};
+
+		document.getElementById('edit-save-changes').addEventListener("click", function () {
+			data = {
+				name: $('#edit-product_name').val(),
+				description: $('#edit-product_description').val(),
+				price: $('#edit-product_price').val(),
+				quantity: $('#edit-product_quantity').val(),
+			};
+		})
 
 		reader.onloadend = function () {
+			data.image = reader.result;
 
-			let data = {
-				name: $('#product_name').val(),
-				description: $('#product_description').val(),
-				price: $('#product_price').val(),
-				quantity: $('#product_quantity').val(),
-				image: reader.result
-			};
+			// If no image is selected, set a default value
+			if (data.image === undefined) {
+				data.image = ""; // or a default image URL
+			}
 
-			document.getElementById('save-changes').innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+			document.getElementById('edit-save-changes').innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
 			updateProduct(id, data);
 		};
 
@@ -131,12 +137,16 @@
 			var fileInput = document.getElementById('edit-product_image');
 			var file = fileInput.files[0];
 
-			console.log("fileInput.files[0]");
-			console.log(file);
-
 			if (file) {
 				reader.readAsDataURL(file); // Read the file as a Data URL
+			} else {
+				// If no file is selected, manually trigger the onloadend event
+				reader.onloadend();
 			}
+		});
+
+		$('#editModal').on('hidden.bs.modal', function () {
+			document.getElementById('edit-save-changes').innerHTML = 'Save changes';
 		});
 	});
 
@@ -208,7 +218,7 @@
 				data.image = ""; // or a default image URL
 			}
 
-			document.getElementById('edit-save-changes').innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+			document.getElementById('add-save-changes').innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
 			addProduct(data);
 		};
 
@@ -339,7 +349,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Save changes</button>
+				<button type="button" class="btn btn-primary" id="add-save-changes">Save changes</button>
 			</div>
 		</div>
 	</div>
