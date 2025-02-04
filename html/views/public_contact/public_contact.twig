@@ -1,0 +1,414 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="M_Adnan">
+		<title>e-comease - Multipurpose eCommerce HTML5 Template</title>
+
+		<!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
+		<link
+		rel="stylesheet" type="text/css" href="/views/assets/rs-plugin/css/settings.css" media="screen"/>
+
+		<!-- Bootstrap Core CSS -->
+		<link
+		href="/views/assets/css/bootstrap.min.css" rel="stylesheet">
+
+		<!-- Custom CSS -->
+		<link href="/views/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+		<link href="/views/assets/css/ionicons.min.css" rel="stylesheet">
+		<link href="/views/assets/css/main.css" rel="stylesheet">
+		<link href="/views/assets/css/style.css" rel="stylesheet">
+		<link
+		href="/views/assets/css/responsive.css" rel="stylesheet">
+
+		<!-- JavaScripts -->
+		<script src="/views/assets/js/modernizr.js"></script>
+
+		<!-- Online Fonts -->
+		<link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Playfair+Display:400,700,900' rel='stylesheet' type='text/css'>
+
+	</head>
+	<body>
+
+		<!-- LOADER -->
+		<div id="loader">
+			<div class="position-center-center">
+				<div class="ldr"></div>
+			</div>
+		</div>
+
+		<!-- Wrap -->
+		<div
+			id="wrap">
+
+			<!-- header -->
+			<header>
+				<div class="sticky">
+					<div class="container">
+						<nav
+							class="navbar ownmenu">
+							<!-- NAV -->
+							<div class="collapse navbar-collapse" id="nav-open-btn">
+								<ul class="nav">
+									<li>
+										<a href="/index.php/">Home</a>
+									</li>
+									<li class="active">
+										<a href="/index.php/shop/">
+											Shop</a>
+									</li>
+									<li>
+										<a href="/index.php/about/">
+											contact</a>
+									</li>
+								</ul>
+							</div>
+
+							<!-- Nav Right -->
+							<div class="nav-right">
+								<ul
+									class="navbar-right">
+									<!-- USER BASKET -->
+									<li class="dropdown user-basket">
+										<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+											<i class="icon-basket-loaded"></i>
+										</a>
+										<ul class="dropdown-menu">
+											<li>
+												<div class="media-left">
+													<div class="cart-img">
+														<a href="#">
+															<img class="media-object img-responsive" src="/views/assets/images/cart-img-1.jpg" alt="...">
+														</a>
+													</div>
+												</div>
+												<div class="media-body">
+													<h6 class="media-heading">WOOD CHAIR</h6>
+													<span class="price">129.00 USD</span>
+													<span class="qty">QTY: 01</span>
+												</div>
+											</li>
+											<li>
+												<div class="media-left">
+													<div class="cart-img">
+														<a href="#">
+															<img class="media-object img-responsive" src="/views/assets/images/cart-img-2.jpg" alt="...">
+														</a>
+													</div>
+												</div>
+												<div class="media-body">
+													<h6 class="media-heading">WOOD STOOL</h6>
+													<span class="price">129.00 USD</span>
+													<span class="qty">QTY: 01</span>
+												</div>
+											</li>
+											<li>
+												<h5 class="text-center">SUBTOTAL: 258.00 USD</h5>
+											</li>
+											<li class="margin-0">
+												<div class="row">
+													<div class="col-xs-6">
+														<a href="shopping-cart.html" class="btn">VIEW CART</a>
+													</div>
+													<div class="col-xs-6 ">
+														<a href="checkout.html" class="btn">CHECK OUT</a>
+													</div>
+												</div>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+						</nav>
+					</div>
+				</div>
+			</header>
+
+			<!--======= SUB BANNER =========-->
+			<section class="sub-bnr" data-stellar-background-ratio="0.5">
+				<div class="position-center-center">
+					<div class="container">
+						<h4>contact us now</h4>
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec faucibus maximus vehicula. 
+																												          Sed feugiat, tellus vel tristique posuere, diam</p>
+						<ol class="breadcrumb">
+							<li>
+								<a href="#">Home</a>
+							</li>
+							<li class="active">contact</li>
+						</ol>
+					</div>
+				</div>
+			</section>
+
+			<!-- Content -->
+			<div
+				id="content">
+
+				<!--======= CONATACT  =========-->
+				<section class="contact padding-top-100 padding-bottom-100">
+					<div class="container">
+						<div class="contact-form">
+							<h5>PLEASE fill-up FEW details</h5>
+							<div class="row">
+								<div
+									class="col-md-8">
+
+									<!--======= FORM  =========-->
+									<form role="form" id="contact_form" class="contact-form" method="post" onsubmit="return false">
+										<ul class="row">
+											<li class="col-sm-6">
+												<label>full name *
+													<input type="text" class="form-control" name="name" id="name" placeholder="">
+												</label>
+											</li>
+											<li class="col-sm-12">
+												<label>Message
+													<textarea class="form-control" name="message" id="message" rows="5" placeholder=""></textarea>
+												</label>
+											</li>
+											<li class="col-sm-12">
+												<button type="submit" value="submit" class="btn" id="btn_submit" onclick="proceed();">SEND MAIL</button>
+											</li>
+										</ul>
+									</form>
+								</div>
+
+								<!--======= ADDRESS INFO  =========-->
+								<div class="col-md-4">
+									<div class="contact-info">
+										<h6>OUR ADDRESS</h6>
+										<ul>
+											<li>
+												<i class="icon-map-pin"></i>
+												Street No. 12, Newyork 12,<br>
+												MD - 123, USA.</li>
+											<li>
+												<i class="icon-call-end"></i>
+												1.800.123.456789</li>
+											<li>
+												<i class="icon-envelope"></i>
+												<a href="mailto:someone@example.com" target="_top">info@ecoshop.com</a>
+											</li>
+											<li>
+												<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam erat turpis, pellentesque non leo eget.</p>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!--======= MAP =========-->
+				<div id="map"></div>
+
+				<!-- About -->
+				<section class="small-about padding-top-150 padding-bottom-150">
+					<div
+						class="container">
+
+						<!-- Main Heading -->
+						<div class="heading text-center">
+							<h4>about ecoshop</h4>
+							<p>Phasellus lacinia fermentum bibendum. Interdum et malesuada fames ac ante ipsumien lacus, eu posuere odio luctus non. Nulla lacinia,
+																																            eros vel fermentum consectetur, risus purus tempc, et iaculis odio dolor in ex.
+							</p>
+						</div>
+
+						<!-- Social Icons -->
+						<ul class="social_icons">
+							<li>
+								<a href="#.">
+									<i class="icon-social-facebook"></i>
+								</a>
+							</li>
+							<li>
+								<a href="#.">
+									<i class="icon-social-twitter"></i>
+								</a>
+							</li>
+							<li>
+								<a href="#.">
+									<i class="icon-social-tumblr"></i>
+								</a>
+							</li>
+							<li>
+								<a href="#.">
+									<i class="icon-social-youtube"></i>
+								</a>
+							</li>
+							<li>
+								<a href="#.">
+									<i class="icon-social-dribbble"></i>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</section>
+
+				<!-- News Letter -->
+				<section class="news-letter padding-top-150 padding-bottom-150">
+					<div class="container">
+						<div class="heading light-head text-center margin-bottom-30">
+							<h4>NEWSLETTER</h4>
+							<span>Phasellus lacinia fermentum bibendum. Interdum et malesuada fames ac ante ipsumien lacus, eu posuere odi
+							</span>
+						</div>
+						<form>
+							<input type="email" placeholder="Enter your email address" required>
+							<button type="submit">SEND ME</button>
+						</form>
+					</div>
+				</section>
+			</div>
+
+			<!--======= FOOTER =========-->
+			<footer>
+				<div
+					class="container">
+
+					<!-- ABOUT Location -->
+					<div class="col-md-3">
+						<div class="about-footer">
+							<img class="margin-bottom-30" src="/views/assets/images/logo-foot.png" alt="">
+							<p>
+								<i class="icon-pointer"></i>
+								Street No. 12, Newyork 12,
+								<br>
+								MD - 123, USA.</p>
+							<p>
+								<i class="icon-call-end"></i>
+								1.800.123.456789</p>
+							<p>
+								<i class="icon-envelope"></i>
+								info@ecoshop.com</p>
+						</div>
+					</div>
+
+					<!-- HELPFUL LINKS -->
+					<div class="col-md-3">
+						<h6>HELPFUL LINKS</h6>
+						<ul class="link">
+							<li>
+								<a href="#.">
+									Products</a>
+							</li>
+							<li>
+								<a href="#.">
+									Find a Store</a>
+							</li>
+							<li>
+								<a href="#.">
+									Features</a>
+							</li>
+							<li>
+								<a href="#.">
+									Privacy Policy</a>
+							</li>
+							<li>
+								<a href="#.">
+									Blog</a>
+							</li>
+							<li>
+								<a href="#.">
+									Press Kit
+								</a>
+							</li>
+						</ul>
+					</div>
+
+					<!-- SHOP -->
+					<div class="col-md-3">
+						<h6>SHOP</h6>
+						<ul class="link">
+							<li>
+								<a href="#.">
+									About Us</a>
+							</li>
+							<li>
+								<a href="#.">
+									Career</a>
+							</li>
+							<li>
+								<a href="#.">
+									Shipping Methods</a>
+							</li>
+							<li>
+								<a href="#.">
+									Contact</a>
+							</li>
+							<li>
+								<a href="#.">
+									Support</a>
+							</li>
+							<li>
+								<a href="#.">
+									Retailer</a>
+							</li>
+						</ul>
+					</div>
+
+					<!-- MY ACCOUNT -->
+					<div class="col-md-3">
+						<h6>MY ACCOUNT</h6>
+						<ul class="link">
+							<li>
+								<a href="#.">
+									Login</a>
+							</li>
+							<li>
+								<a href="#.">
+									My Account</a>
+							</li>
+							<li>
+								<a href="#.">
+									My Cart</a>
+							</li>
+							<li>
+								<a href="#.">
+									Wishlist</a>
+							</li>
+							<li>
+								<a href="#.">
+									Checkout</a>
+							</li>
+						</ul>
+					</div>
+
+					<!-- Rights -->
+
+					<div class="rights">
+						<p>©  2016 ecoshop All right reserved.
+						</p>
+						<div class="scroll">
+							<a href="#wrap" class="go-up">
+								<i class="lnr lnr-arrow-up"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</div>
+		<script src="/views/assets/js/jquery-1.11.3.min.js"></script>
+		<script src="/views/assets/js/bootstrap.min.js"></script>
+		<script src="/views/assets/js/own-menu.js"></script>
+		<script src="/views/assets/js/jquery.lighter.js"></script>
+		<script src="/views/assets/js/owl.carousel.min.js"></script>
+
+		<!-- SLIDER REVOLUTION 4.x SCRIPTS  -->
+		<script type="text/javascript" src="/views/assets/rs-plugin/js/jquery.tp.t.min.js"></script>
+		<script type="text/javascript" src="/views/assets/rs-plugin/js/jquery.tp.min.js"></script>
+		<script src="/views/assets/js/main.js"></script>
+	</body>
+
+	<script>
+		function proceed() {
+			alert('Message sent succesfully !')
+		}
+	</script>
+</html>
